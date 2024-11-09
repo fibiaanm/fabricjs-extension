@@ -1,12 +1,21 @@
 import {Canvas, FabricObject} from "fabric";
 import {DialogWithOneInput} from "../OpenDialogs/DialogWithOneInput.ts";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
-import {ExecutableActions} from "../interfaces/ExecutableActions.ts";
+import {ExecutableActions, OneInputAction, oneInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
 import Position from "../../primitives/Position.ts";
+
+export type ChangeColorActiveElementConfig = {} & OneInputAction
 
 export class ChangeColorActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: ChangeColorActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: ChangeColorActiveElementConfig): ChangeColorActiveElement {
+        const instance = new ChangeColorActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas,
@@ -27,11 +36,22 @@ export class ChangeColorActiveElement implements ExecutableActions {
             const coordsLocal =
                 coords ??
                 normalizeFabricCoords(activeObject, this.canvas);
+            const updateFunction: oneInputUpdateCallback = (value: string) => {
+                this.changeColorCallback(activeObject, value);
+            }
+            const updateCallback = updateFunction.bind(this)
+
+            if (this.config?.open) {
+                this.config.open(
+                    coordsLocal,
+                    updateCallback
+                )
+                return;
+            }
+
             const dialog = new DialogWithOneInput(
                 activeObject.fill.toString(),
-                (value) => {
-                    this.changeColorCallback(activeObject, value);
-                }
+                updateCallback
             )
             dialog.open({
                 coords: coordsLocal,

@@ -2,9 +2,24 @@ import {Canvas, FabricObject} from "fabric";
 import {ObjectBuilder} from "../pages/objects/ObjectBuilder.ts";
 import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
 
+export type PasteAnyElementConfig = {
+    allowExternalImages: boolean
+}
 export class PasteAnyElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: PasteAnyElementConfig = {
+        allowExternalImages: true
+    };
+
+    static build(
+        canvas: Canvas,
+        config: PasteAnyElementConfig
+    ): PasteAnyElement {
+        const instance = new PasteAnyElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas
@@ -26,6 +41,7 @@ export class PasteAnyElement implements ExecutableActions {
                     this.pasteText(item);
                 }
                 if (item.types.includes('image/png')) {
+                    if (!this.config.allowExternalImages) continue;
                     this.pasteImage(item);
                 }
             }

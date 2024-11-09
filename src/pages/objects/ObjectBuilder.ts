@@ -1,12 +1,12 @@
-import {FabricImage, FabricObjectProps, Rect} from "fabric";
+import {Circle, CircleProps, FabricImage, FabricObjectProps, Rect} from "fabric";
 
-type supportedObjects = 'rect' | 'image'
+type supportedObjects = 'rect' | 'image' | 'circle'
 
 export class ObjectBuilder {
 
     private url: string = '';
     constructor(
-        private props: Partial<FabricObjectProps>,
+        private props: Partial<FabricObjectProps | CircleProps>,
         private kind: supportedObjects
     ) {
         const mapData = new Map(Object.entries(props));
@@ -26,6 +26,8 @@ export class ObjectBuilder {
                 return this.buildRect() as Promise<T>;
             case "image":
                 return this.buildImage() as Promise<T>;
+            case "circle":
+                return this.buildCircle() as Promise<T>;
         }
     }
 
@@ -33,6 +35,13 @@ export class ObjectBuilder {
         return new Promise((resolve) => {
             const rect = new Rect(this.props);
             resolve(rect);
+        })
+    }
+
+    private buildCircle() {
+        return new Promise((resolve) => {
+            const circle = new Circle(this.props);
+            resolve(circle);
         })
     }
 

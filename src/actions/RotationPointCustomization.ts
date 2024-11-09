@@ -3,13 +3,22 @@ import rotationSvg from "../resources/rotationSvg.ts";
 import {VirtualizeSize} from "../utils/virtualizeSize.ts";
 import config from "../config/config.ts";
 
+export type RotationPointCustomizationConfig = {
+    svg?: () => string;
+}
+
 export class RotationPointCustomization {
 
     private static rotatingIcon: HTMLImageElement;
+    private static svgSource: string = rotationSvg;
+    public config: RotationPointCustomizationConfig = {};
+
     static get svgResource() {
         if (!RotationPointCustomization.rotatingIcon) {
             const img = window.document.createElement('img');
-            const svgRotateIcon = encodeURIComponent(rotationSvg);
+            const svgRotateIcon = encodeURIComponent(
+                RotationPointCustomization.svgSource
+            );
             img.crossOrigin = 'anonymous';
             img.src = `data:image/svg+xml;utf8,${svgRotateIcon}`
             RotationPointCustomization.rotatingIcon = img;
@@ -18,9 +27,17 @@ export class RotationPointCustomization {
         return RotationPointCustomization.rotatingIcon;
     }
 
+    static build(canvas: Canvas, config: RotationPointCustomizationConfig) {
+        config.svg && (RotationPointCustomization.svgSource = config.svg());
+        const instance = new RotationPointCustomization(canvas);
+        instance.config = config;
+        return instance;
+    }
+
     constructor(
         private canvas: Canvas
     ) {
+        this.config.svg && (RotationPointCustomization.svgSource = this.config.svg());
         RotationPointCustomization.svgResource.onload = () => {}
         canvas.on('object:added', (a    ) => {
             const object = a.target;

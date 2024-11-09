@@ -4,7 +4,10 @@ import {DialogWithButtonActions} from "./OpenDialogs/DialogWithButtonActions.ts"
 import {normalizeFabricCoords} from "../utils/normalizeFabricCoords.ts";
 import {lockingObjectActions} from "../utils/lockingObjectActions.ts";
 import {CreateCropShapes} from "../pages/objects/CreateCropShapes.ts";
+import {DecisionAction} from "./interfaces/ExecutableActions.ts";
+import {buttonCallbacks} from "./OpenDialogs/Dialog.ts";
 
+export type CropActiveElementConfig = {} & DecisionAction;
 
 export class CropActiveElement implements UserDependentActions {
 
@@ -13,6 +16,14 @@ export class CropActiveElement implements UserDependentActions {
 
     private cropHelpers: FabricObject[] = [];
     private dialog: DialogWithButtonActions | undefined;
+
+    private config: CropActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: CropActiveElementConfig): CropActiveElement {
+        const instance = new CropActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas
@@ -60,7 +71,6 @@ export class CropActiveElement implements UserDependentActions {
         this.canvas.setActiveObject(obj);
         lockingObjectActions(obj, false);
         this.removeHelpers();
-        console.log('crop applied');
 
         this.activeObject = undefined;
         this.dialog = undefined;
@@ -88,13 +98,20 @@ export class CropActiveElement implements UserDependentActions {
         if (typeof (activeElement as any).cropX !== 'number') return
 
         const coords = normalizeFabricCoords(activeElement, this.canvas);
-
-        const dialog = new DialogWithButtonActions({
+        const actionCallbacks: buttonCallbacks = {
             accept: this.apply.bind(this),
             cancel: this.cancel.bind(this),
             clear: this.clear.bind(this),
-        });
+        }
+
         this.setupCrop().then();
+
+        if (this.config?.open) {
+            this.config.open(coords, actionCallbacks);
+            return;
+        }
+
+        const dialog = new DialogWithButtonActions(actionCallbacks);
         dialog.open({
             coords,
             title: 'Crop',

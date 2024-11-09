@@ -1,14 +1,24 @@
 import {Canvas, FabricObject} from "fabric";
 import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
 
+export type PushBackActiveElementConfig = {}
+
 export class PushBackActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: PushBackActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: PushBackActiveElementConfig): PushBackActiveElement {
+        const instance = new PushBackActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
     constructor(
         private canvas: Canvas
     ) {
         this.listener = this.pushBackActiveElement.bind(this);
         window.addEventListener("keydown", this.listener);
+        this.config;
     }
 
     private pushBackActiveElement(ev: KeyboardEvent) {

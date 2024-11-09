@@ -1,13 +1,24 @@
 import {Canvas, Point, TPointerEventInfo} from "fabric";
 
+export type ApplyZoomConfig = boolean;
+
 export class ApplyZoom {
     private readonly listener: (opt: TPointerEventInfo<WheelEvent>) => void;
     private minZoom = 0.1;
     private maxZoom = 10;
 
+    private config: ApplyZoomConfig = true;
+
+    static build(canvas: Canvas, config: ApplyZoomConfig): ApplyZoom {
+        const instance = new ApplyZoom(canvas);
+        instance.config = config;
+        return instance;
+    }
+
     constructor(private canvas: Canvas) {
         this.listener = this.handleMouseWheel.bind(this);
         this.canvas.on('mouse:wheel', this.listener);
+        this.config;
     }
 
     private handleMouseWheel(opt: TPointerEventInfo<WheelEvent>) {

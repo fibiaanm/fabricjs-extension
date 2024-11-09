@@ -1,12 +1,21 @@
 import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithTwoInputs} from "../OpenDialogs/DialogWithTwoInputs.ts";
-import {ExecutableActions} from "../interfaces/ExecutableActions.ts";
+import {ExecutableActions, TwoInputAction, TwoInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
 import Position from "../../primitives/Position.ts";
+
+export type ScaleActiveElementConfig = {} & TwoInputAction
 
 export class ScaleActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: ScaleActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: ScaleActiveElementConfig): ScaleActiveElement {
+        const instance = new ScaleActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas
@@ -27,12 +36,23 @@ export class ScaleActiveElement implements ExecutableActions {
             const localCoords =
                 coords ??
                 normalizeFabricCoords(activeObject, this.canvas);
+            const callbackFunction: TwoInputUpdateCallback = (value) => {
+                this.scaleCallback(activeObject, value);
+            }
+            const updateCallback = callbackFunction.bind(this);
+
+            if (this.config?.open) {
+                this.config.open(
+                    localCoords,
+                    updateCallback
+                );
+                return;
+            }
+
             const dialog = new DialogWithTwoInputs(
                 [activeObject.scaleX.toString(), activeObject.scaleY.toString()],
-                (value) => {
-                    this.scaleCallback(activeObject, value);
-                }
-            )
+                updateCallback
+            );
             dialog.open({
                 coords: localCoords,
                 title: 'scale',

@@ -116,6 +116,12 @@ export default class {
                 }
                 this.close();
             }
+            if (ev.key === 'Escape') {
+                if (this.onClickOutside) {
+                    this.onClickOutside.destroy();
+                }
+                this.close();
+            }
         });
         input.addEventListener('click', () => {
             input.select();

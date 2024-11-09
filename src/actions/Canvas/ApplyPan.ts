@@ -1,7 +1,16 @@
 import {Canvas, TPointerEventInfo} from "fabric";
 
+export type ApplyPanConfig = boolean;
+
 export class ApplyPan {
 
+    private config: ApplyPanConfig = true;
+
+    static build(canvas: Canvas, config: ApplyPanConfig): ApplyPan {
+        const instance = new ApplyPan(canvas);
+        instance.config = config;
+        return instance;
+    }
     constructor(
         private canvas: Canvas
     ) {
@@ -9,6 +18,7 @@ export class ApplyPan {
             const ev = opt.e;
             this.onMouseWheel(ev);
         });
+        this.config;
     }
 
     public onMouseWheel(event: WheelEvent) {
