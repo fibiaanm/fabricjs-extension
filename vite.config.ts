@@ -1,4 +1,4 @@
-import {fileURLToPath, URL} from "node:url";
+import {fileURLToPath, URL} from "url";
 import {defineConfig, UserConfig} from 'vite'
 import checker from "vite-plugin-checker";
 import dts from "vite-plugin-dts";
@@ -31,6 +31,6 @@ export default defineConfig(({mode}) => {
         server: {
             port: 4000
         },
-        ...(mode === "app" ? {} : buildLibrary)
+        ...buildLibrary
     }
 })

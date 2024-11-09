@@ -1,4 +1,4 @@
-import install from "./api/install.ts";
+import install from "./api/install";
 
-export type { ActionsAvailable} from "./actions/list.ts";
+export type { ActionsAvailable} from "./actions/list";
 export { install };

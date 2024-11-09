@@ -1,6 +1,6 @@
 {
   "name": "fabricjs-extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "type": "module",
   "private": false,
@@ -14,6 +14,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/node": "^22.9.0",
     "typescript": "~5.6.2",
     "vite": "^5.4.10",
     "vite-plugin-checker": "^0.7.2",
@@ -22,5 +23,9 @@
   "dependencies": {
     "decimal.js": "^10.4.3",
     "fabric": "^6.4.3"
-  }
+  },
+  "peerDependencies": {
+    "fabric": "^6.4.3"
+  },
+  "repository": "fibiaanm/fabricjs-extension.git"
 }
