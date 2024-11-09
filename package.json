@@ -21,8 +21,7 @@
     "vite-plugin-dts": "^3.9.1"
   },
   "dependencies": {
-    "decimal.js": "^10.4.3",
-    "fabric": "^6.4.3"
+    "decimal.js": "^10.4.3"
   },
   "peerDependencies": {
     "fabric": "^6.4.3"
