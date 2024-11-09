@@ -1,19 +1,22 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Vite + TS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="w-full h-full bg-blue-200 p-5 flex flex-wrap">
+</head>
+<body class="w-full h-full bg-blue-200 p-5 flex flex-wrap">
 <!--    <div class="fixed left-2 top-2 bg-blue-800 z-10" style="width: 30px; height: 30px"></div>-->
-    <canvas id="main-canvas" width="500" height="500" class="border">
-    </canvas>
-    <div class="flex flex-1 justify-start items-start p-2">
-      <button id="add-rect-button" class="rounded px-2 border py-1">Add Rect</button>
-    </div>
-    <script type="module" src="/src/importer.ts"></script>
-  </body>
+<canvas id="main-canvas" width="500" height="500" class="border">
+</canvas>
+<div class="flex flex-wrap flex-1 justify-start content-start items-start p-2">
+    <div class="w-full text-center text-lg border-t mt-4 py-2 border-white">Add Shapes</div>
+    <button id="add-rect-button" class="rounded px-2 py-1 border border-white duration-100 hover:bg-white">Rectangle
+    </button>
+    <div class="w-full text-center text-lg border-t mt-4 py-2 border-white">Images Library</div>
+</div>
+<script type="module" src="/src/importer.ts"></script>
+</body>
 </html>

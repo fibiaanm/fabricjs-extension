@@ -1,6 +1,6 @@
 
 export interface UserDependentActions {
-    start: () => void;
+    start: (ev: any) => void;
     cancel: () => void;
     clear: () => void;
     apply: () => void;

@@ -4,7 +4,7 @@ import {Canvas} from "fabric";
 
 export class InstallActions {
 
-    private initializers: any = {};
+    private actions: any = {};
 
     constructor(
         private canvas: Canvas
@@ -24,12 +24,12 @@ export class InstallActions {
             initializers[key] = new action(this.canvas);
         }
 
-        this.initializers = initializers;
+        this.actions = initializers;
     }
 
     public uninstall() {
-        for (const key of Object.keys(this.initializers)) {
-            this.initializers[key].destroy();
+        for (const key of Object.keys(this.actions)) {
+            this.actions[key].destroy();
         }
     }
 }

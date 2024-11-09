@@ -1,6 +1,7 @@
 import {Canvas} from "fabric";
+import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
 
-export class DeleteActiveElement {
+export class DeleteActiveElement implements ExecutableActions{
 
     private readonly listener: (ev: KeyboardEvent) => void;
     constructor(private canvas: Canvas) {
@@ -10,11 +11,14 @@ export class DeleteActiveElement {
 
     private deleteActiveElement(ev: KeyboardEvent) {
         if (ev.key === "Delete" || ev.key === "Backspace") {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                this.canvas.remove(activeObject);
-            }
+            this.execute();
         }
+    }
+
+    public execute() {
+        const activeObject = this.canvas.getActiveObject();
+        if (!activeObject) return;
+        this.canvas.remove(activeObject);
     }
 
     public destroy() {

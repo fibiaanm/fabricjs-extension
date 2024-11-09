@@ -2,8 +2,10 @@ import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithOneInput} from "../OpenDialogs/DialogWithOneInput.ts";
 import {isNumber} from "../../utils/isNumber.ts";
+import {ExecutableActions} from "../interfaces/ExecutableActions.ts";
+import Position from "../../primitives/Position.ts";
 
-export class RotateActiveElement {
+export class RotateActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
 
@@ -16,17 +18,23 @@ export class RotateActiveElement {
 
     private rotateActiveElement(ev: KeyboardEvent) {
         if (ev.key === "r" && !ev.ctrlKey && !ev.metaKey) {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const coords = normalizeFabricCoords(activeObject, this.canvas);
-                const dialog = new DialogWithOneInput(
-                    activeObject.angle.toString(),
-                    (value) => {
-                        this.rotationCallback(activeObject, value);
-                    }
-                )
-                dialog.open({coords, title: 'rotate'})
-            }
+            this.execute();
+        }
+    }
+
+    public execute(coords?: Position) {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject) {
+            const localCoords =
+                coords ??
+                normalizeFabricCoords(activeObject, this.canvas);
+            const dialog = new DialogWithOneInput(
+                activeObject.angle.toString(),
+                (value) => {
+                    this.rotationCallback(activeObject, value);
+                }
+            )
+            dialog.open({coords: localCoords, title: 'rotate'})
         }
     }
 

@@ -1,6 +1,7 @@
-import {Canvas, Rect} from "fabric";
+import {Canvas, FabricImage, Rect} from "fabric";
 import install from "./api/install.ts";
-import {ObjectBuilder} from "./pages/ObjectBuilder.ts";
+import {ObjectBuilder} from "./pages/objects/ObjectBuilder.ts";
+import {randomHexColor} from "./utils/random.ts";
 
 
 const addRectButton = document.getElementById('add-rect-button')!;
@@ -14,27 +15,42 @@ mainCanvas.renderAll();
 
 install(mainCanvas);
 
+new ObjectBuilder({
+    left: -150,
+    top: -150,
+    width: 200,
+    height: 200,
+    fill: '#0000ff'
+}, "rect")
+    .build<Rect>()
+    .then((rect) => {
+        mainCanvas.add(rect);
+    });
+
+new ObjectBuilder({
+    left: 200,
+    top: 200,
+    scaleX: 0.4,
+    scaleY: 0.4,
+}, 'image').setUrl('https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg')
+    .build<FabricImage>()
+    .then((image) => {
+        image.set({
+            cropX: 100,
+            cropY: 100,
+            width: 200,
+            height: 200,
+        })
+        mainCanvas.add(image);
+    });
 
 addRectButton.addEventListener('click', () => {
     new ObjectBuilder({
-        left: 0,
-        top: 0,
+        left: 10,
+        top: 10,
         width: 200,
         height: 200,
-        fill: '#ff0000'
-    }, "rect")
-        .build<Rect>()
-        .then((rect) => {
-            mainCanvas.add(rect);
-            mainCanvas.setActiveObject(rect);
-        });
-
-    new ObjectBuilder({
-        left: -200,
-        top: -200,
-        width: 200,
-        height: 200,
-        fill: '#0000ff'
+        fill: randomHexColor(),
     }, "rect")
         .build<Rect>()
         .then((rect) => {
@@ -43,3 +59,10 @@ addRectButton.addEventListener('click', () => {
         });
 });
 addRectButton.click();
+
+
+const cropCode = () => {
+    return;
+
+}
+cropCode();

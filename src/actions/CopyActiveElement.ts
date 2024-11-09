@@ -1,7 +1,8 @@
 import {Canvas} from "fabric";
 import {saveJsonToClipboard} from "../utils/saveJsonToClipboard.ts";
+import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
 
-export class CopyActiveElement {
+export class CopyActiveElement implements ExecutableActions{
 
     private readonly listener: (ev: KeyboardEvent) => void;
     constructor(
@@ -13,14 +14,18 @@ export class CopyActiveElement {
 
     private copyActiveElement(ev: KeyboardEvent) {
         if (ev.key === 'c' && ev.ctrlKey || ev.key === 'c' && ev.metaKey) {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const element = activeObject.toObject();
-                saveJsonToClipboard({
-                    object: element,
-                    meta: {}
-                });
-            }
+            this.execute();
+        }
+    }
+
+    public execute() {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject) {
+            const element = activeObject.toObject();
+            saveJsonToClipboard({
+                object: element,
+                meta: {}
+            });
         }
     }
 

@@ -1,8 +1,10 @@
 import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithTwoInputs} from "../OpenDialogs/DialogWithTwoInputs.ts";
+import {ExecutableActions} from "../interfaces/ExecutableActions.ts";
+import Position from "../../primitives/Position.ts";
 
-export class MoveActiveElement {
+export class MoveActiveElement implements ExecutableActions{
 
     private readonly listener: (ev: KeyboardEvent) => void;
 
@@ -15,21 +17,27 @@ export class MoveActiveElement {
 
     private moveActiveElement(ev: KeyboardEvent) {
         if (ev.key === "m" && !ev.ctrlKey && !ev.metaKey) {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const coords = normalizeFabricCoords(activeObject, this.canvas);
-                const dialog = new DialogWithTwoInputs(
-                    [activeObject.left.toString(), activeObject.top.toString()],
-                    (values) => {
-                        this.moveCallback(activeObject, values);
-                    }
-                )
-                dialog.open({
-                    coords,
-                    title: 'move',
-                    inputLabels: ['Left: ', 'Top: ']
-                })
-            }
+
+        }
+    }
+
+    public execute(coords?: Position) {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject) {
+            const coordsLocal =
+                coords ??
+                normalizeFabricCoords(activeObject, this.canvas);
+            const dialog = new DialogWithTwoInputs(
+                [activeObject.left.toString(), activeObject.top.toString()],
+                (values) => {
+                    this.moveCallback(activeObject, values);
+                }
+            )
+            dialog.open({
+                coords: coordsLocal,
+                title: 'move',
+                inputLabels: ['Left: ', 'Top: ']
+            })
         }
     }
 
