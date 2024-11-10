@@ -20,6 +20,7 @@ import {PushBackActiveElement, PushBackActiveElementConfig} from "./pushBackActi
 import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/ExecutableActions.ts";
 import {DropImagesOnCanvas} from "./DropImagesOnCanvas.ts";
 import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
+import {ContextMenuHandler} from "./ContextMenuHandler.ts";
 
 export const actionsList =  {
     // General actions
@@ -49,6 +50,7 @@ export const actionsList =  {
 
     // Mobile support:
     'zoomWithPinch': ZoomWithPinch,
+    'contextMenuHandler': ContextMenuHandler,
 }
 
 export type ActionsListBuilder = {
@@ -80,4 +82,5 @@ export type ActionsToInstallConfig = {
     'changeZoomRatio'?: ChangeZoomRatioConfig,
     'dropImagesOnCanvas'?: boolean,
     'zoomWithPinch'?: boolean,
+    'contextMenuHandler'?: boolean,
 }

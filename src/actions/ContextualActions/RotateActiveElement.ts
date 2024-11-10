@@ -12,6 +12,10 @@ export class RotateActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
     private config: RotateActiveElementConfig = {}
+    public contextual = {
+        name: 'Rotate',
+        order: '2,1',
+    }
 
     static build(canvas: Canvas, config: RotateActiveElementConfig): RotateActiveElement {
         const instance = new RotateActiveElement(canvas);
@@ -32,7 +36,7 @@ export class RotateActiveElement implements ExecutableActions {
         }
     }
 
-    public execute(coords?: Position) {
+    public execute({coords}: {coords?: Position} = {}) {
         const activeObject = this.canvas.getActiveObject();
         if (activeObject) {
             const localCoords =

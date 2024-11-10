@@ -30,7 +30,7 @@ export class ScaleActiveElement implements ExecutableActions {
         }
     }
 
-    public execute(coords?: Position) {
+    public execute({coords}: {coords?: Position} = {}) {
         const activeObject = this.canvas.getActiveObject();
         if (activeObject) {
             const localCoords =

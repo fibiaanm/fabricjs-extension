@@ -8,16 +8,16 @@ export const activeObject = (actions: ExecutableActionsList) => {
             actions.deleteActiveElement?.execute();
         },
         rotate: (props: contextualProps) => {
-            actions.rotateActiveElement?.execute(props.coords);
+            actions.rotateActiveElement?.execute(props);
         },
         scale: (props: contextualProps) => {
-            actions.scaleActiveElement?.execute(props.coords);
+            actions.scaleActiveElement?.execute(props);
         },
         move: (props: contextualProps) => {
-            actions.moveActiveElement?.execute(props.coords);
+            actions.moveActiveElement?.execute(props);
         },
         changeColor: (props: contextualProps) => {
-            actions.changeColorActiveElement?.execute(props.coords);
+            actions.changeColorActiveElement?.execute(props);
         },
         crop: () => {
             actions.cropActiveElement?.execute();

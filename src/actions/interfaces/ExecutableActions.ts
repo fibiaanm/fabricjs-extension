@@ -14,9 +14,15 @@ export type DecisionAction = {
 }
 
 export interface ExecutableActions {
-    execute(...args: unknown[]): void;
+    execute(params?: Object): void;
+    contextual?: {
+        order?: string;
+        shortcut?: string;
+        name: string;
+    }
 }
 
 export interface ExecutableActionBuilder {
     build(...args: unknown[]): ExecutableActions;
+    requiresActions?: boolean;
 }

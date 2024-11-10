@@ -194,6 +194,88 @@
         </div>
     </div>
 
+    <div class="hidden right-3 top-4 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none min-w-[120px] backdrop-saturate-150" 
+         tabindex="0" 
+         id="crop-menu">
+        <div class="w-full text-center text-sm font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50">
+            Crop Mode
+        </div>
+        <div class="flex w-full p-2 items-center justify-around gap-2">
+            <button class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all duration-200 backdrop-blur-md">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 -960 960 960" 
+                     class="w-5 h-5 text-green-600 dark:text-green-400 relative z-10">
+                    <path fill="currentColor" 
+                          d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                </svg>
+                <span class="font-medium text-sm text-neutral-700 dark:text-white/90 relative z-10">Apply</span>
+            </button>
+            <button class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all duration-200 backdrop-blur-md">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     viewBox="0 -960 960 960" 
+                     class="w-5 h-5 text-red-600 dark:text-red-400 relative z-10">
+                    <path fill="currentColor" 
+                          d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/>
+                </svg>
+                <span class="font-medium text-sm text-red-600 dark:text-red-400 relative z-10">Cancel</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="fixed bottom-3 left-3 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none min-w-[200px] backdrop-saturate-150" id="context-menu">
+        <ul class="space-y-1">
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
+                </svg>
+                <span class="font-medium relative z-10">Copy</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⌘C</span>
+            </li>
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <span class="font-medium relative z-10">Paste</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⌘V</span>
+            </li>
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 cursor-pointer flex items-center gap-3 text-red-600 dark:text-red-400 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                <span class="font-medium relative z-10">Delete</span>
+                <span class="ml-auto text-xs relative z-10">Del</span>
+            </li>
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                <span class="font-medium relative z-10">Crop</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">X</span>
+            </li>
+            <li class="border-t border-neutral-200/50 dark:border-neutral-700/50 my-1"></li>
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                <span class="font-medium relative z-10">Bring to Front</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⇧F</span>
+            </li>
+            <li class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5l9 2-9-18-9 18 9-2zm0 0v8"></path>
+                </svg>
+                <span class="font-medium relative z-10">Send to Back</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⇧B</span>
+            </li>
+        </ul>
+    </div>
+
     <footer class="w-full py-4 border-t border-white mt-auto">
         <div class="container mx-auto px-4">
             <div class="flex flex-wrap justify-between items-center">

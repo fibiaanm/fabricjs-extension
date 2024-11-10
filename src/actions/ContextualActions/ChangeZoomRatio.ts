@@ -30,7 +30,7 @@ export class ChangeZoomRatio implements ExecutableActions {
         }
     }
 
-    public execute(coords?: Position) {
+    public execute({coords}: {coords?: Position} = {}) {
         const zoom = this.canvas.getZoom();
         const wrapper = this.canvas.wrapperEl;
         const wrapperBounds = wrapper.getBoundingClientRect();
