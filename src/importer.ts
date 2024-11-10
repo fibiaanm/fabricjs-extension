@@ -16,6 +16,9 @@ declare global {
 const addRectButton = document.getElementById('add-rect-button')!;
 const addCircleButton = document.getElementById('add-circle-button')!;
 
+const canvasElement = document.getElementById('main-canvas') as HTMLCanvasElement;
+canvasElement.width = window.innerWidth - 100;
+
 const mainCanvas = new Canvas('main-canvas', {
     backgroundColor: 'white',
     preserveObjectStacking: true,

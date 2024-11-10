@@ -1,47 +1,82 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8"/>
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Fabric.js Extension – Enhanced Canvas Editor with Shortcuts & Actions</title>
-    
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Fabric.js Extension enhances Fabric.js with advanced keyboard shortcuts, mouse actions, and tools for optimized canvas editing. Ideal for designers and developers working with Fabric.js-based projects.">
-    
+    <meta name="description"
+        content="Fabric.js Extension enhances Fabric.js with advanced keyboard shortcuts, mouse actions, and tools for optimized canvas editing. Ideal for designers and developers working with Fabric.js-based projects.">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://fibiaanm.github.io/fabricjs-extension/">
     <meta property="og:title" content="Fabric.js Extension – Enhanced Canvas Editor with Advanced Shortcuts & Actions">
-    <meta property="og:description" content="Boost productivity in Fabric.js with this extension, featuring keyboard shortcuts, canvas navigation, element manipulation, and customization tools.">
-    
+    <meta property="og:description"
+        content="Boost productivity in Fabric.js with this extension, featuring keyboard shortcuts, canvas navigation, element manipulation, and customization tools.">
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://fibiaanm.github.io/fabricjs-extension/">
-    <meta property="twitter:title" content="Fabric.js Extension – Enhanced Canvas Editor with Advanced Shortcuts & Actions">
-    <meta property="twitter:description" content="Explore Fabric.js Extension for an enriched canvas editing experience with shortcuts and tools to speed up workflows.">
-    
+    <meta property="twitter:title"
+        content="Fabric.js Extension – Enhanced Canvas Editor with Advanced Shortcuts & Actions">
+    <meta property="twitter:description"
+        content="Explore Fabric.js Extension for an enriched canvas editing experience with shortcuts and tools to speed up workflows.">
+
     <!-- Additional Keywords -->
-    <meta name="keywords" content="Fabric.js extension, canvas editor, Fabric.js shortcuts, Fabric.js tools, canvas manipulation, digital design tools, Fabric.js plugin, advanced canvas editing">
+    <meta name="keywords"
+        content="Fabric.js extension, canvas editor, Fabric.js shortcuts, Fabric.js tools, canvas manipulation, digital design tools, Fabric.js plugin, advanced canvas editing">
 </head>
+
 <body class="min-h-screen flex flex-col bg-neutral-200">
-    <div class="flex-grow p-5">
+    <button id="theme-toggle" class="fixed bottom-4 right-4 p-2 dark:bg-gray-200 bg-gray-800 dark:text-neutral-700 text-white/90 rounded-full shadow-md z-[99] flex items-center">
+        <svg id="theme-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Sun Icon for Light Mode -->
+            <path id="sun" class="dark:hidden" d="M12 4a1 1 0 011 1v2a1 1 0 11-2 0V5a1 1 0 011-1zm0 14a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zm8-10a1 1 0 01.707 1.707l-1.414 1.414a1 1 0 11-1.414-1.414l1.414-1.414A1 1 0 0120 8zm-14 0a1 1 0 01.707 1.707l-1.414 1.414a1 1 0 11-1.414-1.414l1.414-1.414A1 1 0 016 8zm12.364 8.364a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 011.414-1.414l1.414 1.414a1 1 0 010 1.414zm-10.728 0a1 1 0 01-1.414 0l-1.414-1.414a1 1 0 011.414-1.414l1.414 1.414a1 1 0 010 1.414zM12 2a10 10 0 100 20 10 10 0 000-20z"/>
+            <!-- Moon Icon for Dark Mode -->
+            <path id="moon" class="hidden dark:block" d="M12 2a10 10 0 00-1.5 19.8A8 8 0 0112 4a8 8 0 018 8 8 8 0 01-8 8 8 8 0 01-8-8 8 8 0 018-8zm0 2a6 6 0 00-6 6 6 6 0 006 6 6 6 0 006-6 6 6 0 00-6-6z"/>
+        </svg>
+    </button>
+
+    <div class="flex-grow p-5 bg-gradient-to-br from-neutral-100 to-neutral-300 dark:from-neutral-800 dark:to-neutral-900">
         <div class="flex flex-wrap">
-            <canvas id="main-canvas" width="500" height="500" class="border">
-            </canvas>
-            <div class="flex flex-wrap flex-1 justify-start content-start items-start p-2 min-w-80">
-                <div class="w-full text-center text-lg border-t mt-4 py-2 border-white font-bold">Add Shapes</div>
-                <div class="p-0.5">
-                    <button id="add-rect-button" class="rounded px-2 py-1 border border-white duration-100 hover:bg-white">Rectangle
-                    </button>
+            <div class="w-full flex justify-center">
+                <canvas id="main-canvas" width="600" height="500"
+                        class="rounded border border-white/20 ">
+                </canvas>
+            </div>
+            <div class="flex flex-wrap flex-1 justify-start content-start items-start p-4 min-w-80 max-h-80">
+                <div class="w-1/3 px-1 h-full">
+                    <div class="bg-white/70 h-full dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 mb-4">
+                        <div class="text-center text-lg font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50">
+                            Add Shapes
+                        </div>
+                        <div class="flex gap-2 p-2">
+                            <button id="add-rect-button"
+                                    class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 transition-all duration-200 backdrop-blur-sm">
+                                <span class="text-sm font-medium text-neutral-700 dark:text-white/90">Rectangle</span>
+                                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                            </button>
+                            <button id="add-circle-button"
+                                    class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 transition-all duration-200 backdrop-blur-sm">
+                                <span class="text-sm font-medium text-neutral-700 dark:text-white/90">Circle</span>
+                                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="p-0.5">
-                    <button id="add-circle-button" class="rounded px-2 py-1 border border-white duration-100 hover:bg-white">Circle
-                    </button>
-                </div>
-                <div class="w-full text-center text-lg border-t mt-4 py-2 border-white font-bold">Images Library</div>
-                <div class="w-full flex flex-wrap content-start" id="images-library">
+                <div class="px-1 w-2/3 h-full flex flex-col">
+                    <div class="w-full h-full flex flex-col bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50">
+                        <div class="text-center text-lg font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50">
+                            Images Library
+                        </div>
+                        <div class="w-full flex-1 flex overflow-auto flex-wrap content-start p-2" id="images-library">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -51,109 +86,101 @@
 
     </div>
 
-    <div id="shortcuts-info" class="w-full px-5 mb-8">
-        <div class="w-full text-center text-2xl font-bold mb-6 border-t mt-8 pt-4 border-white">
+    <div id="shortcuts-info" class="w-full px-5 mb-8 bg-neutral-100/50 dark:bg-neutral-900/50 backdrop-blur-sm py-8">
+        <div class="w-full text-center text-2xl font-bold mb-6 text-neutral-700 dark:text-white/90">
             Keyboard Shortcuts & Actions
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <!-- Actions for Active Objects -->
-            <div class="bg-white/10 p-4 rounded-lg">
-                <h3 class="font-bold text-lg mb-3">Contextual for Active Objects</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <div class="bg-white/70 dark:bg-neutral-800/70 p-4 rounded-lg shadow-xl backdrop-blur-lg border border-white/20 dark:border-neutral-700/50">
+                <h3 class="font-bold text-lg mb-3 text-neutral-700 dark:text-white/90">Contextual for Active Objects</h3>
                 <ul class="space-y-2">
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Delete</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Del</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Del</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Copy</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Ctrl + c</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Ctrl + c</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Paste</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Ctrl + v</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Ctrl + v</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Rotate</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">r</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">r</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Scale</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">s</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">s</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Move</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">m</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">m</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Change Color</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">c</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">c</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Crop</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">x</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">x</kbd>
                     </li>
                 </ul>
             </div>
-
-            <!-- Canvas and Page Actions -->
-            <div class="bg-white/10 p-4 rounded-lg">
-                <h3 class="font-bold text-lg mb-3">Canvas and Page Actions</h3>
+            <div class="bg-white/70 dark:bg-neutral-800/70 p-4 rounded-lg shadow-xl backdrop-blur-lg border border-white/20 dark:border-neutral-700/50">
+                <h3 class="font-bold text-lg mb-3 text-neutral-700 dark:text-white/90">Canvas and Page Actions</h3>
                 <ul class="space-y-2">
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Pan to Center</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">o</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">o</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Bring Front</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">f</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">f</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Bring to Front</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + f</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Shift + f</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Send Backwards</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">b</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">b</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Send to Back</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + b</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Shift + b</kbd>
                     </li>
-                    <li class="flex justify-between items-center">
-                        <div class="flex-1 flex items-center">
-                            <span>Change Zoom</span>
-                        </div>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">z</kbd>
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
+                        <span>Change Zoom</span>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">z</kbd>
                     </li>
                 </ul>
             </div>
-
-            <!-- Mouse Actions -->
-            <div class="bg-white/10 p-4 rounded-lg">
-                <h3 class="font-bold text-lg mb-3">Mouse Actions</h3>
+            <div class="bg-white/70 dark:bg-neutral-800/70 p-4 rounded-lg shadow-xl backdrop-blur-lg border border-white/20 dark:border-neutral-700/50">
+                <h3 class="font-bold text-lg mb-3 text-neutral-700 dark:text-white/90">Mouse Actions</h3>
                 <ul class="space-y-2">
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Pan Canvas</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Wheel</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Wheel</kbd>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Select/Move</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Click & Drag</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Click & Drag</kbd>
                     </li>
-                    <li class="flex justify-between items-center">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <div class="flex-1 flex items-center">
                             <span>Zoom in/out</span>
                         </div>
                         <div class="flex flex-col items-end gap-2">
-                            <kbd class="inline-block px-2 py-1 bg-white/20 rounded">Ctrl + Wheel</kbd>
-                            <kbd class="inline-block px-2 py-1 bg-white/20 rounded">Pinch</kbd>
+                            <kbd class="inline-block px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Ctrl + Wheel</kbd>
+                            <kbd class="inline-block px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Pinch</kbd>
                         </div>
                     </li>
-                    <li class="flex justify-between">
+                    <li class="flex justify-between items-center px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 text-neutral-700 dark:text-white/90">
                         <span>Interval Rotation</span>
-                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + Top handle</kbd>
+                        <kbd class="px-2 py-1 bg-white/80 dark:bg-neutral-700/80 rounded text-xs">Shift + Top handle</kbd>
                     </li>
                 </ul>
             </div>
@@ -163,19 +190,19 @@
     <div id="keyboard-svg" class="hidden bottom-2 left-2 rounded-full bg-white p-2 cursor-pointer">
     </div>
 
-    <div class="w-full px-5 mb-8">
-        <div class="w-full text-center text-2xl font-bold mb-6 border-t mt-8 pt-4 border-white">
+    <div class="w-full px-5 mb-8 bg-neutral-50/50 dark:bg-neutral-950/50 backdrop-blur-sm py-8">
+        <div class="w-full text-center text-2xl font-bold mb-6 text-neutral-700 dark:text-white/90">
             Customization Tips
         </div>
         
-        <div class="bg-white/10 p-6 rounded-lg max-w-3xl mx-auto">
-            <h3 class="font-bold text-lg mb-3">Event-Driven Customization</h3>
-            <p class="text-sm leading-relaxed">
-                You can customize the visual behavior of elements by subscribing to Fabric.js events during the extension initialization. 
+        <div class="bg-white/70 dark:bg-neutral-800/70 p-6 rounded-lg shadow-xl backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 max-w-3xl mx-auto">
+            <h3 class="font-bold text-lg mb-3 text-neutral-700 dark:text-white/90">Event-Driven Customization</h3>
+            <p class="text-sm leading-relaxed text-neutral-600 dark:text-white/80">
+                You can customize the visual behavior of elements by subscribing to Fabric.js events during the extension initialization.
                 This allows you to create your own components, modify controls, borders, selection styles, and interaction feedback.
             </p>
-            <div class="mt-4 bg-black/20 p-4 rounded">
-                <code class="text-xs">
+            <div class="mt-4 bg-black/10 dark:bg-black/30 p-4 rounded-lg backdrop-blur-sm">
+                <code class="text-xs text-neutral-700 dark:text-white/90">
                     install(canvas, {<br>
                     &nbsp;&nbsp;'actionsToInstall': {<br>
                     &nbsp;&nbsp;&nbsp;&nbsp;'*': true,<br>
@@ -188,61 +215,196 @@
                     });
                 </code>
             </div>
-            <p class="mt-4 text-sm text-neutral-500">
-                The full documentation will be available soon.
-            </p>
         </div>
     </div>
 
-    <footer class="w-full py-4 border-t border-white mt-auto">
+    <div class="hidden top-2 left-2 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none min-w-[180px] backdrop-saturate-150"
+        tabindex="0"
+        id="input-modal">
+        <div class="w-full text-center text-sm font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50">
+            Scale
+        </div>
+        <div class="p-2 space-y-3">
+            <div class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 backdrop-blur-sm">
+                <label class="text-sm font-medium text-neutral-600 dark:text-white/70 min-w-[20px]">X:</label>
+                <input class="w-full bg-transparent border-0 focus:outline-none text-sm text-neutral-700 dark:text-white/90 font-medium text-right"
+                    type="text"
+                    placeholder="1.0">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                </div>
+            </div>
+            <div class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 backdrop-blur-sm">
+                <label class="text-sm font-medium text-neutral-600 dark:text-white/70 min-w-[20px]">Y:</label>
+                <input class="w-full bg-transparent border-0 focus:outline-none text-sm text-neutral-700 dark:text-white/90 font-medium text-right"
+                    type="text"
+                    placeholder="1.0">
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-3 pt-2 border-t border-neutral-200/50 dark:border-neutral-700/50">
+            <button class="group relative flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all duration-200 backdrop-blur-sm">
+                <span class="text-xs font-medium text-green-600 dark:text-green-400">Apply</span>
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </button>
+            <button class="group relative flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all duration-200 backdrop-blur-sm">
+                <span class="text-xs font-medium text-red-600 dark:text-red-400">Cancel</span>
+                <div class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+            </button>
+        </div>
+    </div>
+
+    <div class="hidden right-3 top-4 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none min-w-[120px] backdrop-saturate-150"
+        tabindex="0" id="crop-menu">
+        <div
+            class="w-full text-center text-sm font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50">
+            Crop Mode
+        </div>
+        <div class="flex w-full p-2 items-center justify-around gap-2">
+            <button
+                class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all duration-200 backdrop-blur-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"
+                    class="w-5 h-5 text-green-600 dark:text-green-400 relative z-10">
+                    <path fill="currentColor"
+                        d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                </svg>
+                <span class="font-medium text-sm text-neutral-700 dark:text-white/90 relative z-10">Apply</span>
+            </button>
+            <button
+                class="group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all duration-200 backdrop-blur-md">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960"
+                    class="w-5 h-5 text-red-600 dark:text-red-400 relative z-10">
+                    <path fill="currentColor"
+                        d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                </svg>
+                <span class="font-medium text-sm text-red-600 dark:text-red-400 relative z-10">Cancel</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="hidden bottom-3 left-3 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none min-w-[200px] backdrop-saturate-150"
+        id="context-menu">
+        <ul class="space-y-1">
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2">
+                    </path>
+                </svg>
+                <span class="font-medium relative z-10">Copy</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⌘C</span>
+            </li>
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                    </path>
+                </svg>
+                <span class="font-medium relative z-10">Paste</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⌘V</span>
+            </li>
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 cursor-pointer flex items-center gap-3 text-red-600 dark:text-red-400 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                </svg>
+                <span class="font-medium relative z-10">Delete</span>
+                <span class="ml-auto text-xs relative z-10">Del</span>
+            </li>
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                <span class="font-medium relative z-10">Crop</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">X</span>
+            </li>
+            <li class="border-t border-neutral-200/50 dark:border-neutral-700/50 my-1"></li>
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                <span class="font-medium relative z-10">Bring to Front</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⇧F</span>
+            </li>
+            <li
+                class="group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200">
+                <div
+                    class="absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                </div>
+                <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 5l9 2-9-18-9 18 9-2zm0 0v8"></path>
+                </svg>
+                <span class="font-medium relative z-10">Send to Back</span>
+                <span class="ml-auto text-xs text-neutral-500 dark:text-neutral-400 relative z-10">⇧B</span>
+            </li>
+        </ul>
+    </div>
+
+    <footer class="w-full py-6 bg-white/70 dark:bg-neutral-800/70 backdrop-blur-lg border-t border-white/20 dark:border-neutral-700/50">
         <div class="container mx-auto px-4">
-            <div class="flex flex-wrap justify-between items-center">
+            <div class="flex flex-wrap justify-between items-start">
                 <div class="w-full md:w-auto mb-4 md:mb-0 text-center md:text-left">
-                    <h3 class="font-bold text-lg mb-2">Resources</h3>
+                    <h3 class="font-bold text-lg mb-2 text-neutral-700 dark:text-white/90">Resources</h3>
                     <ul class="space-y-2">
                         <li>
-                            <a href="http://fabricjs.com/" 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               class="hover:underline">
+                            <a href="http://fabricjs.com/" target="_blank" rel="noopener noreferrer"
+                                class="hover:underline">
                                 Fabric.js Official Website
                             </a>
                         </li>
                         <li>
-                            <a href="https://github.com/fabricjs/fabric.js" 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               class="hover:underline">
+                            <a href="https://github.com/fabricjs/fabric.js" target="_blank" rel="noopener noreferrer"
+                                class="hover:underline">
                                 Fabric.js GitHub
                             </a>
                         </li>
                     </ul>
                 </div>
-                
+
                 <div class="w-full md:w-auto mb-4 md:mb-0 text-center">
-                    <h3 class="font-bold text-lg mb-2">Connect</h3>
+                    <h3 class="font-bold text-lg mb-2 text-neutral-700 dark:text-white/90">Connect</h3>
                     <ul class="space-y-2">
                         <li>
-                            <a href="https://github.com/fibiaanm" 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               class="hover:underline">
+                            <a href="https://github.com/fibiaanm" target="_blank" rel="noopener noreferrer"
+                                class="hover:underline">
                                 GitHub Profile
                             </a>
                         </li>
                         <li>
-                            <a href="https://github.com/fibiaanm/fabricjs-extension" 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               class="hover:underline">
+                            <a href="https://github.com/fibiaanm/fabricjs-extension" target="_blank"
+                                rel="noopener noreferrer" class="hover:underline">
                                 Project Repository
                             </a>
                         </li>
                     </ul>
                 </div>
-                
+
                 <div class="w-full md:w-auto text-center md:text-right">
-                    <h3 class="font-bold text-lg mb-2">About</h3>
+                    <h3 class="font-bold text-lg mb-2 text-neutral-700 dark:text-white/90">About</h3>
                     <p class="text-sm">
                         This project extends Fabric.js with additional features,<br>
                         keyboard shortcuts, and tools for enhanced canvas editing.<br>
@@ -260,12 +422,10 @@
     <style>
         .animate-image-loading {
             animation: loadingEffect 3s ease-in-out infinite;
-            background: linear-gradient(
-                    0deg,
+            background: linear-gradient(0deg,
                     rgba(180, 180, 180, 0) 0%,
                     rgba(160, 160, 160, 0.7) 50%,
-                    rgba(180, 180, 180, 0) 100%
-            );
+                    rgba(180, 180, 180, 0) 100%);
             background-size: 100% 200%;
         }
 
@@ -273,9 +433,11 @@
             0% {
                 background-position: top;
             }
+
             50% {
                 background-position: bottom;
             }
+
             100% {
                 background-position: top;
             }
@@ -283,9 +445,20 @@
 
         /* Add styles for kbd elements */
         #shortcuts-info kbd {
-            font-size: 0.75rem; /* 12px */
-            line-height: 1rem; /* 16px */
+            font-size: 0.75rem;
+            /* 12px */
+            line-height: 1rem;
+            /* 16px */
         }
     </style>
+    <script>
+        // JavaScript to toggle dark/light mode
+        const toggleButton = document.getElementById('theme-toggle');
+
+        toggleButton.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+    </script>
 </body>
+
 </html>
