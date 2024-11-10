@@ -4,10 +4,12 @@ import install, {FabricJsExt} from "./api/install.ts";
 import {ObjectBuilder} from "./pages/objects/ObjectBuilder.ts";
 import {randomHexColor} from "./utils/random.ts";
 import keyboardSVG from "./resources/keyboardSVG.ts";
+import {touchSetTest} from "./testCommands/touch.ts";
 
 declare global {
     interface Window {
         actions: FabricJsExt;
+        touch: any
     }
 }
 
@@ -19,6 +21,8 @@ const mainCanvas = new Canvas('main-canvas', {
     preserveObjectStacking: true,
 });
 mainCanvas.renderAll();
+
+window.touch = touchSetTest(mainCanvas);
 
 (window as Window).actions = install(mainCanvas, {
     'actionsToInstall': {
@@ -90,7 +94,7 @@ const CONTAINER_CLASS_LIST = CONTAINER_CLASS.split(' ');
 const IMAGE_CLASS = 'w-full h-full object-cover rounded';
 const IMAGE_CLASS_LIST = IMAGE_CLASS.split(' ');
 
-imagesLibrary.forEach((image) => {
+imagesLibrary.forEach((image, index) => {
     const imageContainer = document.createElement('div');
     imageContainer.classList.add(...CONTAINER_CLASS_LIST);
     const imgElement = document.createElement('img');
@@ -104,6 +108,10 @@ imagesLibrary.forEach((image) => {
     imageContainer.addEventListener('click', () => {
         addImage(image);
     });
+
+    if (index === 0) {
+        addImage(image);
+    }
 });
 
 const keyboardSVGContainer = document.getElementById('keyboard-svg')!;

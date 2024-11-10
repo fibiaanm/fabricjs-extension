@@ -19,6 +19,7 @@ import {BringFrontActiveElement, BringFrontActiveElementConfig} from "./BringFro
 import {PushBackActiveElement, PushBackActiveElementConfig} from "./pushBackActiveElement.ts";
 import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/ExecutableActions.ts";
 import {DropImagesOnCanvas} from "./DropImagesOnCanvas.ts";
+import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
 
 export const actionsList =  {
     // General actions
@@ -45,6 +46,9 @@ export const actionsList =  {
     'dropImagesOnCanvas': DropImagesOnCanvas,
     // Contextual actions for canvas
     'changeZoomRatio': ChangeZoomRatio,
+
+    // Mobile support:
+    'zoomWithPinch': ZoomWithPinch,
 }
 
 export type ActionsListBuilder = {
@@ -75,4 +79,5 @@ export type ActionsToInstallConfig = {
     'pushBackActiveElement'?: PushBackActiveElementConfig,
     'changeZoomRatio'?: ChangeZoomRatioConfig,
     'dropImagesOnCanvas'?: boolean,
+    'zoomWithPinch'?: boolean,
 }
