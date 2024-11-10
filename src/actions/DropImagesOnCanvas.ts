@@ -1,5 +1,7 @@
 import {Canvas, FabricImage} from "fabric";
 import {ObjectBuilder} from "../pages/objects/ObjectBuilder";
+import {virtualizeToFabricCoords} from "../utils/virtualizeToFabricCoords.ts";
+import Position from "../primitives/Position.ts";
 
 export class DropImagesOnCanvas {
 
@@ -8,9 +10,10 @@ export class DropImagesOnCanvas {
     }
 
     constructor(private canvas: Canvas) {
-        console.trace()
         this.initializeDropZone();
     }
+
+    private vPosition: Position = new Position(0,0);
 
     private initializeDropZone() {
         const canvasEl = this.canvas.getElement();
@@ -56,7 +59,11 @@ export class DropImagesOnCanvas {
             return; // Exit early if we handled files
         }
 
-        console.log('items', items);
+        const evCoords = new Position(
+            e.clientX,
+            e.clientY
+        );
+        this.vPosition = virtualizeToFabricCoords(evCoords, this.canvas);
 
         // Only handle items if we didn't handle files
         if (items && items.length > 0) {
@@ -94,14 +101,20 @@ export class DropImagesOnCanvas {
 
     private addImageFromUrl(url: string) {
         new ObjectBuilder({
-            left: 0,
-            top: 0,
+            left: this.vPosition.x,
+            top: this.vPosition.y,
             scaleX: 0.4,
             scaleY: 0.4,
         }, 'image')
             .setUrl(url)
             .build<FabricImage>()
             .then((image) => {
+                const halfWidth = image.width * image.scaleX / 2;
+                const halfHeight = image.height * image.scaleY / 2;
+                image.set({
+                    left: this.vPosition.x - halfWidth,
+                    top: this.vPosition.y - halfHeight,
+                });
                 this.canvas.add(image);
                 this.canvas.setActiveObject(image);
                 this.canvas.renderAll();
