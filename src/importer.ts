@@ -19,6 +19,10 @@ const addCircleButton = document.getElementById('add-circle-button')!;
 const mainCanvas = new Canvas('main-canvas', {
     backgroundColor: 'white',
     preserveObjectStacking: true,
+    isTouchSupported:true,
+    gestures: ['drag', 'zoom', 'rotate'],
+    controlsAboveOverlay: true,
+    allowTouchScrolling: true,
 });
 mainCanvas.renderAll();
 
