@@ -21,6 +21,7 @@ const buildLibrary: UserConfig = {
 }
 
 const buildApp: UserConfig = {
+    base: '/fabricjs-extension/',
     build: {
         rollupOptions: {
             input: fileURLToPath(new URL("index.html", import.meta.url)),
