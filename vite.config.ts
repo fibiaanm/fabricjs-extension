@@ -11,6 +11,7 @@ const buildLibrary: UserConfig = {
         minify: false,
         rollupOptions: {
             external: Object.keys(pkg.peerDependencies),
+            output: {}
         },
         lib: {
             entry: [fileURLToPath(new URL("src/main.ts", import.meta.url))],

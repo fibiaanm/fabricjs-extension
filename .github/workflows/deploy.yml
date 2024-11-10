@@ -28,7 +28,7 @@ jobs:
         run: yarn install
 
       - name: Build project
-        run: yarn build
+        run: yarn build:app
 
       - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v1

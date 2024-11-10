@@ -1,6 +1,6 @@
 {
   "name": "fabricjs-extension",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "license": "MIT",
   "type": "module",
   "private": false,
@@ -9,9 +9,10 @@
   "types": "dist/main.d.ts",
   "scripts": {
     "dev": "vite",
-    "plugin": "vite build --mode plugin",
-    "build": "tsc && vite build --mode app",
-    "preview": "vite preview"
+    "build:plugin": "vite build --mode plugin",
+    "build:app": "tsc && vite build --mode app",
+    "preview": "vite preview",
+    "publish": "rm -rf dist app && yarn build:plugin && npm publish"
   },
   "devDependencies": {
     "@types/node": "^22.9.0",

@@ -2,6 +2,8 @@ import install from "./api/install";
 import Position from "./primitives/Position";
 export { install, Position };
 
+import './index.css';
+
 export type { ActionsAvailable} from "./actions/list";
 export type {ActiveObjectAPI} from "./api/activeObject";
 export type {PageAPI} from "./api/page";

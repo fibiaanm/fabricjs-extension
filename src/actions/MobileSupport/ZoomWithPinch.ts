@@ -20,6 +20,16 @@ export class ZoomWithPinch {
     private initializeEventListeners() {
         this.canvas.on('mouse:move', this.handleMouseMove.bind(this));
         this.canvas.on('mouse:up', this.handleMouseUp.bind(this));
+        // const gesture = document.getElementById('gesture')!;
+        // this.canvas.on('mouse:dblclick', (opt) => {
+        //     console.log('dblclick', opt);
+        //     gesture.innerHTML = opt.e.type;
+        // });
+        // this.canvas.on('mouse:down', (opt) => {
+        //     console.log('down', opt);
+        //     // activate double touch and move for select area
+        //     gesture.innerHTML = opt.e.type;
+        // });
     }
 
     private handleMouseMove(opt: any) {
