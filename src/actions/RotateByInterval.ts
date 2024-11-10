@@ -1,7 +1,22 @@
 import config from "../config/config.ts";
 import {Canvas, FabricObject} from "fabric";
 
+export type RotateByIntervalConfig = {
+    steps?: number
+}
+
 export class RotateByInterval {
+
+    config: RotateByIntervalConfig = {};
+
+    static build(
+        canvas: Canvas,
+        config: RotateByIntervalConfig
+    ): RotateByInterval {
+        const instance = new RotateByInterval(canvas);
+        instance.config = config;
+        return instance;
+    }
 
 
     constructor(
@@ -30,6 +45,6 @@ export class RotateByInterval {
     }
 
     private get interval() {
-        return config('objects.rotation.steps')
+        return this.config.steps ?? config('objects.rotation.steps')
     }
 }

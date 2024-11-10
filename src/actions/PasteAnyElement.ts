@@ -1,9 +1,25 @@
 import {Canvas, FabricObject} from "fabric";
-import {ObjectBuilder} from "../pages/ObjectBuilder.ts";
+import {ObjectBuilder} from "../pages/objects/ObjectBuilder.ts";
+import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
 
-export class PasteAnyElement {
+export type PasteAnyElementConfig = {
+    allowExternalImages: boolean
+}
+export class PasteAnyElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: PasteAnyElementConfig = {
+        allowExternalImages: true
+    };
+
+    static build(
+        canvas: Canvas,
+        config: PasteAnyElementConfig
+    ): PasteAnyElement {
+        const instance = new PasteAnyElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas
@@ -14,17 +30,22 @@ export class PasteAnyElement {
 
     private pasteData(ev: KeyboardEvent) {
         if (ev.key === 'v' && ev.ctrlKey || ev.key === 'v' && ev.metaKey) {
-            navigator.clipboard.read().then((clipboardItems) => {
-                for (const item of clipboardItems) {
-                    if (item.types.includes('text/plain')) {
-                        this.pasteText(item);
-                    }
-                    if (item.types.includes('image/png')) {
-                        this.pasteImage(item);
-                    }
-                }
-            });
+            this.execute();
         }
+    }
+
+    public execute() {
+        navigator.clipboard.read().then((clipboardItems) => {
+            for (const item of clipboardItems) {
+                if (item.types.includes('text/plain')) {
+                    this.pasteText(item);
+                }
+                if (item.types.includes('image/png')) {
+                    if (!this.config.allowExternalImages) continue;
+                    this.pasteImage(item);
+                }
+            }
+        });
     }
 
     private pasteText(item: ClipboardItem) {

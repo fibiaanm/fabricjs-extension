@@ -1,10 +1,21 @@
 import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithTwoInputs} from "../OpenDialogs/DialogWithTwoInputs.ts";
+import {ExecutableActions, TwoInputAction, TwoInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
+import Position from "../../primitives/Position.ts";
 
-export class MoveActiveElement {
+export type MoveActiveElementConfig = {} & TwoInputAction
+
+export class MoveActiveElement implements ExecutableActions{
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: MoveActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: MoveActiveElementConfig): MoveActiveElement {
+        const instance = new MoveActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas,
@@ -15,21 +26,40 @@ export class MoveActiveElement {
 
     private moveActiveElement(ev: KeyboardEvent) {
         if (ev.key === "m" && !ev.ctrlKey && !ev.metaKey) {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const coords = normalizeFabricCoords(activeObject, this.canvas);
-                const dialog = new DialogWithTwoInputs(
-                    [activeObject.left.toString(), activeObject.top.toString()],
-                    (values) => {
-                        this.moveCallback(activeObject, values);
-                    }
-                )
-                dialog.open({
-                    coords,
-                    title: 'move',
-                    inputLabels: ['Left: ', 'Top: ']
-                })
+            this.execute();
+        }
+    }
+
+    public execute(coords?: Position) {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject) {
+            const coordsLocal =
+                coords ??
+                normalizeFabricCoords(activeObject, this.canvas);
+            const updateFunction: TwoInputUpdateCallback = (values: string[]) => {
+                this.moveCallback(activeObject, values);
             }
+            const updateCallback = updateFunction.bind(this)
+
+            if (this.config?.open) {
+                this.config.open(
+                    coordsLocal,
+                    updateCallback
+                )
+                return;
+            }
+
+            const dialog = new DialogWithTwoInputs(
+                [activeObject.left.toString(), activeObject.top.toString()],
+                (values) => {
+                    this.moveCallback(activeObject, values);
+                }
+            )
+            dialog.open({
+                coords: coordsLocal,
+                title: 'move',
+                inputLabels: ['Left: ', 'Top: ']
+            })
         }
     }
 

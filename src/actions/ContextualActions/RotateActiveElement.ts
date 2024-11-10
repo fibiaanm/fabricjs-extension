@@ -2,10 +2,22 @@ import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithOneInput} from "../OpenDialogs/DialogWithOneInput.ts";
 import {isNumber} from "../../utils/isNumber.ts";
+import {ExecutableActions, OneInputAction, oneInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
+import Position from "../../primitives/Position.ts";
 
-export class RotateActiveElement {
+export type RotateActiveElementConfig = {
+} & OneInputAction
+
+export class RotateActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
+    private config: RotateActiveElementConfig = {}
+
+    static build(canvas: Canvas, config: RotateActiveElementConfig): RotateActiveElement {
+        const instance = new RotateActiveElement(canvas);
+        instance.config = config;
+        return instance;
+    }
 
     constructor(
         private canvas: Canvas
@@ -16,17 +28,34 @@ export class RotateActiveElement {
 
     private rotateActiveElement(ev: KeyboardEvent) {
         if (ev.key === "r" && !ev.ctrlKey && !ev.metaKey) {
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const coords = normalizeFabricCoords(activeObject, this.canvas);
-                const dialog = new DialogWithOneInput(
-                    activeObject.angle.toString(),
-                    (value) => {
-                        this.rotationCallback(activeObject, value);
-                    }
-                )
-                dialog.open({coords, title: 'rotate'})
+            this.execute();
+        }
+    }
+
+    public execute(coords?: Position) {
+        const activeObject = this.canvas.getActiveObject();
+        if (activeObject) {
+            const localCoords =
+                coords ??
+                normalizeFabricCoords(activeObject, this.canvas);
+            const updateFunction: oneInputUpdateCallback = (value: string) => {
+                this.rotationCallback(activeObject, value);
             }
+            const updateCallback = updateFunction.bind(this)
+
+            if (this.config?.open) {
+                this.config.open(
+                    localCoords,
+                    updateCallback
+                )
+                return;
+            }
+
+            const dialog = new DialogWithOneInput(
+                activeObject.angle.toString(),
+                updateCallback
+            )
+            dialog.open({coords: localCoords, title: 'rotate'})
         }
     }
 

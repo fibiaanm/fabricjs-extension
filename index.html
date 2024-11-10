@@ -1,19 +1,287 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="w-full h-full bg-blue-200 p-5 flex flex-wrap">
-<!--    <div class="fixed left-2 top-2 bg-blue-800 z-10" style="width: 30px; height: 30px"></div>-->
-    <canvas id="main-canvas" width="500" height="500" class="border">
-    </canvas>
-    <div class="flex flex-1 justify-start items-start p-2">
-      <button id="add-rect-button" class="rounded px-2 border py-1">Add Rect</button>
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>Fabric.js Extension – Enhanced Canvas Editor with Shortcuts & Actions</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Fabric.js Extension enhances Fabric.js with advanced keyboard shortcuts, mouse actions, and tools for optimized canvas editing. Ideal for designers and developers working with Fabric.js-based projects.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fibiaanm.github.io/fabricjs-extension/">
+    <meta property="og:title" content="Fabric.js Extension – Enhanced Canvas Editor with Advanced Shortcuts & Actions">
+    <meta property="og:description" content="Boost productivity in Fabric.js with this extension, featuring keyboard shortcuts, canvas navigation, element manipulation, and customization tools.">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://fibiaanm.github.io/fabricjs-extension/">
+    <meta property="twitter:title" content="Fabric.js Extension – Enhanced Canvas Editor with Advanced Shortcuts & Actions">
+    <meta property="twitter:description" content="Explore Fabric.js Extension for an enriched canvas editing experience with shortcuts and tools to speed up workflows.">
+    
+    <!-- Additional Keywords -->
+    <meta name="keywords" content="Fabric.js extension, canvas editor, Fabric.js shortcuts, Fabric.js tools, canvas manipulation, digital design tools, Fabric.js plugin, advanced canvas editing">
+</head>
+<body class="min-h-screen flex flex-col bg-neutral-200">
+    <div class="flex-grow p-5">
+        <div class="flex flex-wrap">
+            <canvas id="main-canvas" width="500" height="500" class="border">
+            </canvas>
+            <div class="flex flex-wrap flex-1 justify-start content-start items-start p-2 min-w-80">
+                <div class="w-full text-center text-lg border-t mt-4 py-2 border-white font-bold">Add Shapes</div>
+                <div class="p-0.5">
+                    <button id="add-rect-button" class="rounded px-2 py-1 border border-white duration-100 hover:bg-white">Rectangle
+                    </button>
+                </div>
+                <div class="p-0.5">
+                    <button id="add-circle-button" class="rounded px-2 py-1 border border-white duration-100 hover:bg-white">Circle
+                    </button>
+                </div>
+                <div class="w-full text-center text-lg border-t mt-4 py-2 border-white font-bold">Images Library</div>
+                <div class="w-full flex flex-wrap content-start" id="images-library">
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div id="shortcuts-info" class="w-full px-5 mb-8">
+        <div class="w-full text-center text-2xl font-bold mb-6 border-t mt-8 pt-4 border-white">
+            Keyboard Shortcuts & Actions
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Actions for Active Objects -->
+            <div class="bg-white/10 p-4 rounded-lg">
+                <h3 class="font-bold text-lg mb-3">Contextual for Active Objects</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>Delete</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Del</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Copy</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Ctrl + c</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Paste</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Ctrl + v</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Rotate</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">r</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Scale</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">s</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Move</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">m</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Change Color</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">c</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Crop</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">x</kbd>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Canvas and Page Actions -->
+            <div class="bg-white/10 p-4 rounded-lg">
+                <h3 class="font-bold text-lg mb-3">Canvas and Page Actions</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>Pan to Center</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">o</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Bring Front</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">f</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Bring to Front</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + f</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Send Backwards</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">b</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Send to Back</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + b</kbd>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <div class="flex-1 flex items-center">
+                            <span>Change Zoom</span>
+                        </div>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">z</kbd>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Mouse Actions -->
+            <div class="bg-white/10 p-4 rounded-lg">
+                <h3 class="font-bold text-lg mb-3">Mouse Actions</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>Pan Canvas</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Wheel</kbd>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Select/Move</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Click & Drag</kbd>
+                    </li>
+                    <li class="flex justify-between items-center">
+                        <div class="flex-1 flex items-center">
+                            <span>Zoom in/out</span>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                            <kbd class="inline-block px-2 py-1 bg-white/20 rounded">Ctrl + Wheel</kbd>
+                            <kbd class="inline-block px-2 py-1 bg-white/20 rounded">Pinch</kbd>
+                        </div>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Interval Rotation</span>
+                        <kbd class="px-2 py-1 bg-white/20 rounded">Shift + Top handle</kbd>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="keyboard-svg" class="hidden bottom-2 left-2 rounded-full bg-white p-2 cursor-pointer">
+    </div>
+
+    <div class="w-full px-5 mb-8">
+        <div class="w-full text-center text-2xl font-bold mb-6 border-t mt-8 pt-4 border-white">
+            Customization Tips
+        </div>
+        
+        <div class="bg-white/10 p-6 rounded-lg max-w-3xl mx-auto">
+            <h3 class="font-bold text-lg mb-3">Event-Driven Customization</h3>
+            <p class="text-sm leading-relaxed">
+                You can customize the visual behavior of elements by subscribing to Fabric.js events during the extension initialization. 
+                This allows you to create your own components, modify controls, borders, selection styles, and interaction feedback.
+            </p>
+            <div class="mt-4 bg-black/20 p-4 rounded">
+                <code class="text-xs">
+                    install(canvas, {<br>
+                    &nbsp;&nbsp;'actionsToInstall': {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;'*': true,<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;moveActiveElement: {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;open(coords, update) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('moveActiveElement open', coords, update);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;}<br>
+                    });
+                </code>
+            </div>
+            <p class="mt-4 text-sm text-neutral-500">
+                The full documentation will be available soon.
+            </p>
+        </div>
+    </div>
+
+    <footer class="w-full py-4 border-t border-white mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-between items-center">
+                <div class="w-full md:w-auto mb-4 md:mb-0 text-center md:text-left">
+                    <h3 class="font-bold text-lg mb-2">Resources</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="http://fabricjs.com/" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="hover:underline">
+                                Fabric.js Official Website
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/fabricjs/fabric.js" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="hover:underline">
+                                Fabric.js GitHub
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="w-full md:w-auto mb-4 md:mb-0 text-center">
+                    <h3 class="font-bold text-lg mb-2">Connect</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://github.com/fibiaanm" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="hover:underline">
+                                GitHub Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/fibiaanm/fabricjs-extension" 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               class="hover:underline">
+                                Project Repository
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="w-full md:w-auto text-center md:text-right">
+                    <h3 class="font-bold text-lg mb-2">About</h3>
+                    <p class="text-sm">
+                        This project extends Fabric.js with additional features,<br>
+                        keyboard shortcuts, and tools for enhanced canvas editing.<br>
+                        Built with TypeScript and Tailwind CSS.
+                    </p>
+                    <p class="mt-2 text-sm">
+                        © 2024 Fabric.js Extension
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script type="module" src="/src/importer.ts"></script>
-  </body>
+    <style>
+        .animate-image-loading {
+            animation: loadingEffect 3s ease-in-out infinite;
+            background: linear-gradient(
+                    0deg,
+                    rgba(180, 180, 180, 0) 0%,
+                    rgba(160, 160, 160, 0.7) 50%,
+                    rgba(180, 180, 180, 0) 100%
+            );
+            background-size: 100% 200%;
+        }
+
+        @keyframes loadingEffect {
+            0% {
+                background-position: top;
+            }
+            50% {
+                background-position: bottom;
+            }
+            100% {
+                background-position: top;
+            }
+        }
+
+        /* Add styles for kbd elements */
+        #shortcuts-info kbd {
+            font-size: 0.75rem; /* 12px */
+            line-height: 1rem; /* 16px */
+        }
+    </style>
+</body>
 </html>

@@ -20,6 +20,15 @@ const buildLibrary: UserConfig = {
     },
 }
 
+const buildApp: UserConfig = {
+    build: {
+        rollupOptions: {
+            input: fileURLToPath(new URL("index.html", import.meta.url)),
+        },
+        outDir: "app",
+    }
+}
+
 export default defineConfig(({mode}) => {
     return {
         plugins: [
@@ -31,6 +40,6 @@ export default defineConfig(({mode}) => {
         server: {
             port: 4000
         },
-        ...buildLibrary
+        ...(mode === "app" ? buildApp : buildLibrary)
     }
 })
