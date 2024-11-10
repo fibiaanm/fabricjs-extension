@@ -452,9 +452,21 @@
         }
     </style>
     <script>
+        // Function to set the theme based on system preference
+        function setInitialTheme() {
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            if (darkModeMediaQuery.matches) {
+                document.documentElement.classList.add('dark'); // Set dark mode
+            } else {
+                document.documentElement.classList.remove('dark'); // Set light mode
+            }
+        }
+
+        // Call the function to set the initial theme
+        setInitialTheme();
+
         // JavaScript to toggle dark/light mode
         const toggleButton = document.getElementById('theme-toggle');
-
         toggleButton.addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
         });
