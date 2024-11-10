@@ -1,1 +1,0 @@
-{"version":3,"file":"userDependentActions.d.ts","sourceRoot":"","sources":["../../../src/actions/interfaces/userDependentActions.ts"],"names":[],"mappings":"AACA,MAAM,WAAW,oBAAoB;IACjC,KAAK,EAAE,CAAC,EAAE,EAAE,GAAG,KAAK,IAAI,CAAC;IACzB,MAAM,EAAE,MAAM,IAAI,CAAC;IACnB,KAAK,EAAE,MAAM,IAAI,CAAC;IAClB,KAAK,EAAE,MAAM,IAAI,CAAC;CACrB"}
