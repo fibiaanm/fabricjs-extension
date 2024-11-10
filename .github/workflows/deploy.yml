@@ -25,7 +25,7 @@ jobs:
           node-version: '18.19'
 
       - name: Install dependencies
-        run: yarn install & yarn add -D tailwindcss postcss autoprefixer
+        run: yarn install
 
       - name: Build project
         run: yarn build
