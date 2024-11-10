@@ -20,10 +20,14 @@ const mainCanvas = new Canvas('main-canvas', {
 });
 mainCanvas.renderAll();
 
-
 (window as Window).actions = install(mainCanvas, {
     'actionsToInstall': {
         '*': true,
+        moveActiveElement: {
+            open(coords, update) {
+                console.log('moveActiveElement open', coords, update);
+            },
+        }
     }
 });
 
@@ -58,8 +62,8 @@ addCircleButton.addEventListener('click', () => {
 
 const addImage = (url: string) => {
     new ObjectBuilder({
-        left: 200,
-        top: 200,
+        left: 0,
+        top: 0,
         scaleX: 0.4,
         scaleY: 0.4,
     }, 'image').setUrl(url)

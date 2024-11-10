@@ -1,0 +1,1 @@
+{"version":3,"file":"activeObject.d.ts","sourceRoot":"","sources":["../../src/api/activeObject.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,qBAAqB,EAAC,MAAM,oBAAoB,CAAC;AACzD,OAAO,EAAC,eAAe,EAAC,MAAM,WAAW,CAAC;AAE1C,eAAO,MAAM,YAAY,YAAa,qBAAqB;;oBAMnC,eAAe;mBAGhB,eAAe;kBAGhB,eAAe;yBAGR,eAAe;;;;CAa3C,CAAA;AAED,MAAM,MAAM,eAAe,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAC"}

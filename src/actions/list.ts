@@ -18,6 +18,7 @@ import {ChangeZoomRatio, ChangeZoomRatioConfig} from "./ContextualActions/Change
 import {BringFrontActiveElement, BringFrontActiveElementConfig} from "./BringFrontActiveElement.ts";
 import {PushBackActiveElement, PushBackActiveElementConfig} from "./pushBackActiveElement.ts";
 import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {DropImagesOnCanvas} from "./DropImagesOnCanvas.ts";
 
 export const actionsList =  {
     // General actions
@@ -41,6 +42,7 @@ export const actionsList =  {
     'panToCenter': PanToCenter,
     'bringFrontActiveElement': BringFrontActiveElement,
     'pushBackActiveElement': PushBackActiveElement,
+    'dropImagesOnCanvas': DropImagesOnCanvas,
     // Contextual actions for canvas
     'changeZoomRatio': ChangeZoomRatio,
 }
@@ -72,4 +74,5 @@ export type ActionsToInstallConfig = {
     'bringFrontActiveElement'?: BringFrontActiveElementConfig,
     'pushBackActiveElement'?: PushBackActiveElementConfig,
     'changeZoomRatio'?: ChangeZoomRatioConfig,
+    'dropImagesOnCanvas'?: boolean,
 }

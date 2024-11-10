@@ -1,0 +1,1 @@
+{"version":3,"file":"importer.d.ts","sourceRoot":"","sources":["../src/importer.ts"],"names":[],"mappings":"AAAA,OAAO,aAAa,CAAC;AAErB,OAAgB,EAAC,WAAW,EAAC,MAAM,kBAAkB,CAAC;AAKtD,OAAO,CAAC,MAAM,CAAC;IACX,UAAU,MAAM;QACZ,OAAO,EAAE,WAAW,CAAC;KACxB;CACJ"}

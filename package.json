@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "vite",
     "plugin": "vite build --mode plugin",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --mode app",
     "preview": "vite preview"
   },
   "devDependencies": {
