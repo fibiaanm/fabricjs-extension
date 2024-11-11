@@ -96,7 +96,7 @@ const imagesLibrary = [
 
 ];
 const imagesLibraryContainer = document.getElementById('images-library')!;
-const CONTAINER_CLASS = 'w-1/3 lg:w-1/4 aspect-square flex items-center justify-center overflow-hidden cursor-pointer p-0.5';
+const CONTAINER_CLASS = 'w-1/2 md:w-1/3 lg:w-1/4 aspect-square flex items-center justify-center overflow-hidden cursor-pointer p-0.5';
 const CONTAINER_CLASS_LIST = CONTAINER_CLASS.split(' ');
 const IMAGE_CLASS = 'w-full h-full object-cover rounded';
 const IMAGE_CLASS_LIST = IMAGE_CLASS.split(' ');
