@@ -5,7 +5,7 @@ import {normalizeFabricCoords} from "../utils/normalizeFabricCoords.ts";
 import {lockingObjectActions} from "../utils/lockingObjectActions.ts";
 import {CreateCropShapes} from "../pages/objects/CreateCropShapes.ts";
 import {DecisionAction, ExecutableActions} from "./interfaces/ExecutableActions.ts";
-import {buttonCallbacks} from "./OpenDialogs/Dialog.ts";
+import {buttonCallbacks} from "./interfaces/DialogProperties.ts";
 
 export type CropActiveElementConfig = {} & DecisionAction;
 

@@ -1,5 +1,6 @@
-import Dialog, {buttonCallbacks} from "./Dialog.ts";
+import Dialog from "./Dialog.ts";
 import Position from "../../primitives/Position.ts";
+import {buttonCallbacks} from "../interfaces/DialogProperties.ts";
 
 
 type openDialogWithButtonActions = {

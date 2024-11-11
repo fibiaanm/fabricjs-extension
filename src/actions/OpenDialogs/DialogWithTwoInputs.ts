@@ -28,21 +28,44 @@ export class DialogWithTwoInputs extends Dialog {
         const callback = () => {
             this.doubleCallback([input1.value, input2.value]);
         }
+
+        const inputsContainer = this.createInputsContainer();
+
         const {input: input1, container: container1} =
             this.createInput({
                 callback,
-                label: props.inputLabels?.[0]
+                label: props.inputLabels?.[0],
             });
         input1.value = truncate(this.inputValues[0]);
-        div.appendChild(container1);
+        inputsContainer.appendChild(container1);
 
         const {input: input2, container: container2} =
             this.createInput({
                 callback,
-                label: props.inputLabels?.[1]
+                label: props.inputLabels?.[1],
             });
         input2.value = truncate(this.inputValues[1]);
-        div.appendChild(container2);
+        inputsContainer.appendChild(container2);
+        div.appendChild(inputsContainer);
+
+
+        const {container, accept, cancel} = this.createAcceptCancelButtons();
+
+        accept.addEventListener('click', () => {
+            callback();
+            if (this.onClickOutside) {
+                this.onClickOutside.destroy();
+            }
+            this.close();
+        });
+        cancel.addEventListener('click', () => {
+            if (this.onClickOutside) {
+                this.onClickOutside.destroy();
+            }
+            this.close();
+        });
+
+        div.appendChild(container);
 
         window.document.body.appendChild(div);
         setTimeout(() => {

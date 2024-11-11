@@ -41,7 +41,10 @@ export class ZoomWithPinch {
         const touchCount = e.touches.length;
         const activeObject = this.canvas.getActiveObject();
 
-        if (activeObject && touchCount === 1) return;
+        if (activeObject && touchCount === 1) {
+            // Calculate time to determine if fire context menu or what action to take
+            return;
+        }
 
         this.canvas.selection = false;
 

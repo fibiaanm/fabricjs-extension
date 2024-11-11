@@ -1,68 +1,34 @@
-import Position from "../../primitives/Position.ts";
 import {makeMovable} from "../../utils/makeMovable.ts";
-import {onClickOutside} from "../../utils/onClickOutside.ts";
 import {withNumericEvents} from "../../utils/inputs/withNumericEvents.ts";
-import {TInputSupported} from "../../utils/inputs/inputTypes.ts";
 import checkSVG from "../../resources/checkSVG.ts";
 import cancelSVG from "../../resources/cancelSVG.ts";
 import blockSVG from "../../resources/blockSVG.ts";
 import {elementInsideWindowFrame} from "../../utils/elementInsideWindowFrame.ts";
+import {dialogStyles} from "./DialogStyles.ts";
+import {
+    inputCallback,
+    buttonCallbacks,
+    SVGProps,
+    createWindowProps,
+    createInputProps,
+    TonClickOutside
+} from "../interfaces/DialogProperties.ts";
+import {DialogButtonsBuilder} from "./DialogButtonsBuilder.ts";
+import {onClickOutside} from "../../utils/onClickOutside.ts";
 
-type createWindowProps = {
-    coords: Position;
-    title?: string;
-    useClickOutside?: boolean;
-}
-type createInputProps = {
-    callback?: (value: string) => void;
-    label?: string;
-    type?: TInputSupported;
-}
-type onClickOutside = {
-    destroy: () => void;
-}
-type SVGProps = {
-    fill?: string;
-    width?: number;
-    height?: number;
-}
-type inputCallback = (value: string) => void;
-export type buttonCallbacks = {
-    'accept': () => void;
-    'cancel': () => void;
-    'clear': () => void;
-}
-
-const styles = {
-    window: 'fixed right-3 top-4 bg-white/70 dark:bg-neutral-800/70 rounded-lg shadow-xl p-3 backdrop-blur-lg border border-white/20 dark:border-neutral-700/50 select-none w-fit min-w-[120px] backdrop-saturate-150',
-    title: 'w-full text-center text-sm font-medium text-neutral-700 dark:text-white/90 pb-2 border-b border-neutral-200/50 dark:border-neutral-700/50',
-    buttons: {
-        container: 'flex w-full p-2 items-center justify-around gap-2',
-        applyButton: {
-            el: 'group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-green-500/10 dark:hover:bg-green-500/20 transition-all duration-200 backdrop-blur-md',
-            svg: 'w-5 h-5 text-green-600 dark:text-green-400 relative z-10',
-            span: 'font-medium text-sm text-neutral-700 dark:text-white/90 relative z-10',
-        },
-        cancelButton: {
-            el: 'group relative flex items-center gap-2 px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-red-500/10 dark:hover:bg-red-500/20 transition-all duration-200 backdrop-blur-md',
-            svg: '"w-5 h-5 text-red-600 dark:text-red-400 relative z-10',
-            span: 'font-medium text-sm text-red-600 dark:text-red-400 relative z-10',
-        },
-    }
-}
 
 export default class {
     protected makeMovable = true
     protected movable: any;
     protected element: HTMLElement | undefined;
-    protected onClickOutside: onClickOutside | undefined;
+    protected onClickOutside: TonClickOutside | undefined;
     protected inputCallback: inputCallback = () => {};
 
     private onCloseCallbacks: (() => void)[] = [];
 
     protected createWindow(props: createWindowProps) {
         const div = document.createElement("div");
-        div.classList.add(...styles.window.split(' '));
+        div.classList.add(...dialogStyles.window.split(' '));
         div.style.top = `${props.coords.y}px`;
         div.style.left = `${props.coords.x}px`;
         if (this.makeMovable) {
@@ -74,7 +40,7 @@ export default class {
 
         if (props.title) {
             const title = document.createElement("div");
-            title.classList.add(...styles.title.split(' '));
+            title.classList.add(...dialogStyles.title.split(' '));
             title.textContent = props.title;
             div.appendChild(title);
         }
@@ -99,16 +65,19 @@ export default class {
     protected createInput(options: createInputProps = {}) {
 
         const container = document.createElement("div");
-        container.classList.add('flex', 'w-full', 'p-1', 'items-center');
+        container.classList.add(...dialogStyles.inputs.inputsContainer.container.split(' '));
 
         const label = document.createElement("label");
-        label.classList.add('text-xs', 'text-center', 'flex-1');
+        label.classList.add(...dialogStyles.inputs.inputsContainer.label.split(' '));
         label.textContent = options.label || '';
         container.appendChild(label);
 
         const input = document.createElement("input");
-        input.classList.add('border-0', 'border-gray-300', 'bg-transparent', 'rounded', 'focus:outline-none', 'text-center', 'w-full', 'text-xs');
+        input.classList.add(...dialogStyles.inputs.inputsContainer.input.split(' '));
         input.type = options.type || 'text';
+
+        const helper = document.createElement("div");
+        helper.classList.add(...dialogStyles.inputs.inputsContainer.helper.split(' '));
 
         const callChange = () => {
             if (options.callback) {
@@ -126,27 +95,32 @@ export default class {
             withNumericEvents(input);
         }
 
+        const acceptCallback = () => {
+            callChange();
+            if (this.onClickOutside) {
+                this.onClickOutside.destroy();
+            }
+            this.close();
+        }
+
+        const cancelCallback = () => {
+            if (this.onClickOutside) {
+                this.onClickOutside.destroy();
+            }
+            this.close();
+        }
+
         input.addEventListener('keydown', (ev) => {
             ev.stopPropagation();
-            if (ev.key === 'Enter') {
-                callChange();
-                if (this.onClickOutside) {
-                    this.onClickOutside.destroy();
-                }
-                this.close();
-            }
-            if (ev.key === 'Escape') {
-                if (this.onClickOutside) {
-                    this.onClickOutside.destroy();
-                }
-                this.close();
-            }
+            if (ev.key === 'Enter') acceptCallback();
+            if (ev.key === 'Escape') cancelCallback();
         });
         input.addEventListener('click', () => {
             input.select();
         });
 
         container.appendChild(input);
+        container.appendChild(helper);
 
         return {input, container, label};
     }
@@ -156,7 +130,7 @@ export default class {
         callbacks: buttonCallbacks
     ) {
         const container = document.createElement("div");
-        container.classList.add(...styles.buttons.container.split(' '));
+        container.classList.add(...dialogStyles.buttons.container.split(' '));
 
         const localCallback = () => {
             if (this.onClickOutside) {
@@ -166,13 +140,13 @@ export default class {
         }
 
         const accept = document.createElement("button");
-        accept.classList.add(...styles.buttons.applyButton.el.split(' '));
+        accept.classList.add(...dialogStyles.buttons.applyButton.el.split(' '));
         accept.innerHTML = checkSVG;
         const acceptSVG = accept.querySelector('svg') as SVGElement;
-        acceptSVG.classList.add(...styles.buttons.applyButton.svg.split(' '));
+        acceptSVG.classList.add(...dialogStyles.buttons.applyButton.svg.split(' '));
         const span = document.createElement("span");
         span.textContent = 'Apply';
-        span.classList.add(...styles.buttons.applyButton.span.split(' '));
+        span.classList.add(...dialogStyles.buttons.applyButton.span.split(' '));
         accept.appendChild(span);
         this.changeSVGProps(
             acceptSVG,
@@ -189,13 +163,13 @@ export default class {
 
 
         const cancel = document.createElement("button");
-        cancel.classList.add(...styles.buttons.cancelButton.el.split(' '));
+        cancel.classList.add(...dialogStyles.buttons.cancelButton.el.split(' '));
         cancel.innerHTML = cancelSVG;
         const cancelSVGEl = cancel.querySelector('svg') as SVGElement;
-        cancelSVGEl.classList.add(...styles.buttons.cancelButton.svg.split(' '));
+        cancelSVGEl.classList.add(...dialogStyles.buttons.cancelButton.svg.split(' '));
         const cancelSpan = document.createElement("span");
         cancelSpan.textContent = 'Cancel';
-        cancelSpan.classList.add(...styles.buttons.cancelButton.span.split(' '));
+        cancelSpan.classList.add(...dialogStyles.buttons.cancelButton.span.split(' '));
         cancel.appendChild(cancelSpan);
         this.changeSVGProps(
             cancelSVGEl,
@@ -230,6 +204,25 @@ export default class {
             container,
             accept,
         }
+    }
+
+    protected createInputsContainer = () => {
+        const container = document.createElement("div");
+        container.classList.add(...dialogStyles.inputs.inputsContainer.el.split(' '));
+        return container;
+    }
+
+    protected createAcceptCancelButtons = () => {
+        const container = document.createElement("div");
+        container.classList.add(...dialogStyles.inputs.buttonsContainer.el.split(' '));
+
+        const accept = DialogButtonsBuilder.build('accept');
+        container.appendChild(accept);
+
+        const cancel = DialogButtonsBuilder.build('cancel');
+        container.appendChild(cancel);
+
+        return {container, accept, cancel};
     }
 
     private changeSVGProps(svg: SVGElement, props: SVGProps) {

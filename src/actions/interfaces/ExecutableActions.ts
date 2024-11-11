@@ -1,5 +1,5 @@
 import Position from "../../primitives/Position.ts";
-import {buttonCallbacks} from "../OpenDialogs/Dialog.ts";
+import {buttonCallbacks} from "./DialogProperties.ts";
 
 export type oneInputUpdateCallback = (value: string) => void;
 export type TwoInputUpdateCallback = (value: string[]) => void;
