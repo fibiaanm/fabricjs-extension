@@ -28,7 +28,6 @@ export class HandlerControllersCustomization {
     private setupObjectAddedListener() {
         this.canvas.on('object:added', (event) => {
             const shape = event.target as FabricObject;
-            console.log('shape', shape, this.config);
             if (!shape) return;
             
             if (this.config.transparentCorners !== undefined) {
