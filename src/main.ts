@@ -8,7 +8,7 @@ export type { ActionsAvailable} from "./actions/list";
 export type {ActiveObjectAPI} from "./api/activeObject";
 export type {PageAPI} from "./api/page";
 export type {installOptions, FabricJsExt} from "./api/install";
-export type { RotationPointCustomizationConfig } from "./actions/RotationPointCustomization";
+export type { RotationPointCustomizationConfig } from "./actions/Customizations/RotationPointCustomization.ts";
 export type { RotateByIntervalConfig } from "./actions/RotateByInterval";
 export type { DeleteActiveElementConfig } from "./actions/DeleteActiveElement";
 export type { CopyActiveElementConfig } from "./actions/CopyActiveElement";

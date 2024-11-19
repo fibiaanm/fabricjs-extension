@@ -1,5 +1,5 @@
 import {DeleteActiveElement, DeleteActiveElementConfig} from "./DeleteActiveElement.ts";
-import {RotationPointCustomization, RotationPointCustomizationConfig} from "./RotationPointCustomization.ts";
+import {RotationPointCustomization, RotationPointCustomizationConfig} from "./Customizations/RotationPointCustomization.ts";
 import {CropActiveElement, CropActiveElementConfig} from "./CropActiveElement.ts";
 import {RotateByInterval, RotateByIntervalConfig} from "./RotateByInterval.ts";
 import {RotateActiveElement, RotateActiveElementConfig} from "./ContextualActions/RotateActiveElement.ts";
@@ -21,10 +21,12 @@ import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/Executabl
 import {DropImagesOnCanvas, DropImagesOnCanvasConfig} from "./DropImagesOnCanvas.ts";
 import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
 import {ContextMenuHandler} from "./ContextMenuHandler.ts";
+import { HandlerControllersCustomization, HandlerControllersCustomizationConfig } from "./Customizations/HandlerControllersCustomization.ts";
 
 export const actionsList =  {
     // General actions
     'rotationPointCustomization': RotationPointCustomization,
+    'handlerControllersCustomization': HandlerControllersCustomization,
     'rotateByInterval': RotateByInterval,
     'applyZoom': ApplyZoom,
     'applyPan': ApplyPan,
@@ -70,6 +72,7 @@ export enum extensionCustomWindowEvents {
 export type ActionsToInstallConfig = {
     '*'?: boolean
     'rotationPointCustomization'?: RotationPointCustomizationConfig,
+    'handlerControllersCustomization'?: HandlerControllersCustomizationConfig,
     'rotateByInterval'?: RotateByIntervalConfig,
     'applyZoom'?: ApplyZoomConfig,
     'applyPan'?: boolean,

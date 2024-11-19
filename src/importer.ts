@@ -33,12 +33,21 @@ window.touch = touchSetTest(mainCanvas);
 
 (window as Window).actions = install(mainCanvas, {
     'actionsToInstall': {
+        handlerControllersCustomization: {
+            transparentCorners: false,
+            cornerColor: '#FFFFFF',
+            borderColor: '#336AEA',
+            cornerStyle: 'circle',
+            cornerSize: 10,
+            borderScaleFactor: 2,
+        },
         '*': true,
         moveActiveElement: {
             open(coords, update) {
                 console.log('moveActiveElement open', coords, update);
             },
-        }
+        },
+        
     }
 });
 

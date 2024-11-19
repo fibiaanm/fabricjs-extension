@@ -22,6 +22,7 @@ export class InstallActions {
         for (const k in list) {
             const key = k as ActionsAvailable | keyof ExecutableActionsList;
             const action = list[key];
+            console.log('action', key, Array.isArray(actions), );
             let config: Object = {};
 
             if (Array.isArray(actions)){
@@ -30,11 +31,12 @@ export class InstallActions {
                 }
             } else if (typeof actions === 'string' && actions !== '*') {
                 continue;
-            } else if (typeof actions === 'object' && !actions['*']) {
-                if (!actions[key]) {
+            } else if (typeof actions === 'object') {
+                if (!actions[key] && !actions['*']) {
                     continue;
-                } else {
+                } else if (actions[key]) {
                     config = actions[key];
+                } else {
                 }
             }
 

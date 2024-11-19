@@ -1,7 +1,7 @@
 import {Canvas, Control, controlsUtils, FabricObject, util} from "fabric";
-import rotationSvg from "../resources/rotationSvg.ts";
-import {VirtualizeSize} from "../utils/virtualizeSize.ts";
-import config from "../config/config.ts";
+import rotationSvg from "../../resources/rotationSvg.ts";
+import {VirtualizeSize} from "../../utils/virtualizeSize.ts";
+import config from "../../config/config.ts";
 
 export type RotationPointCustomizationConfig = {
     svg?: () => string;
