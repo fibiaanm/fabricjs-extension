@@ -20,6 +20,8 @@ export class ContextMenuHandler {
         return instance;
     }
 
+    private ctxWindow = new ContextMenu();
+
     constructor(
         private canvas: Canvas,
     ) {
@@ -35,6 +37,7 @@ export class ContextMenuHandler {
     }
 
     public execute({coords}: {coords: Position}) {
+        this.ctxWindow.close();
         const ctxActions: ExecutableActions[] = []
 
         for (const k in this.actions) {
@@ -44,13 +47,17 @@ export class ContextMenuHandler {
             }
         }
 
-        const ctxMenuItems = new ContextMenuItems(ctxActions);
-
-        const ctxWindow = new ContextMenu({
+        const ctxMenuItems = new ContextMenuItems(ContextMenuItems.makeActionsPlain(ctxActions));
+        ctxMenuItems.close = this.ctxWindow.close.bind(this.ctxWindow);
+        this.ctxWindow.props = {
             coords,
             items: ctxMenuItems
-        });
-        ctxWindow.open();
+        }
+        const ul = ctxMenuItems.render();
+
+        if (ul.children.length === 0) return;
+
+        this.ctxWindow.open(ul);
     }
 
     public destroy() {

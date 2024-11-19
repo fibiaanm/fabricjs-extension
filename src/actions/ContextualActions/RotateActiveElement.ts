@@ -2,8 +2,9 @@ import {Canvas, FabricObject} from "fabric";
 import {normalizeFabricCoords} from "../../utils/normalizeFabricCoords.ts";
 import {DialogWithOneInput} from "../OpenDialogs/DialogWithOneInput.ts";
 import {isNumber} from "../../utils/isNumber.ts";
-import {ExecutableActions, OneInputAction, oneInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
+import {ContextualProperties, ExecutableActions, OneInputAction, oneInputUpdateCallback} from "../interfaces/ExecutableActions.ts";
 import Position from "../../primitives/Position.ts";
+import { onlyVisibleWhenObjectIsSelected } from "../OpenDialogs/ContextMenuItemVisibility.ts";
 
 export type RotateActiveElementConfig = {
 } & OneInputAction
@@ -12,10 +13,15 @@ export class RotateActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
     private config: RotateActiveElementConfig = {}
-    public contextual = {
-        name: 'Rotate',
-        order: '2,1',
-    }
+    public contextual: ContextualProperties[] = [{
+            name: 'Rotate',
+            order: '2,1',
+            shortcut: {
+                key: 'r',
+            },
+            visibility: () => onlyVisibleWhenObjectIsSelected(this.canvas),
+        }
+    ]
 
     static build(canvas: Canvas, config: RotateActiveElementConfig): RotateActiveElement {
         const instance = new RotateActiveElement(canvas);

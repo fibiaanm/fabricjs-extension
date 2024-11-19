@@ -13,9 +13,9 @@ export const elementInsideWindowFrame = (element: HTMLElement) => {
         element.style.left = '20px';
     }
     if (elFrame.bottom > window.innerHeight) {
-        element.style.top = `${window.innerHeight - elFrame.height}px`;
+        element.style.top = `${window.innerHeight - elFrame.height - 20}px`;
     }
     if (elFrame.right > window.innerWidth) {
-        element.style.left = `${window.innerWidth - elFrame.width}px`;
+        element.style.left = `${window.innerWidth - elFrame.width - 20}px`;
     }
 }

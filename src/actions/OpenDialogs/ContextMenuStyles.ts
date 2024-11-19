@@ -4,7 +4,9 @@ export const contextMenuStyles = {
     list: {
         el: 'space-y-1',
         element: {
-            el: 'group relative px-3 py-2 rounded-md bg-white/60 dark:bg-neutral-700/40 hover:bg-blue-500/10 dark:hover:bg-blue-500/20 cursor-pointer flex items-center gap-3 text-neutral-700 dark:text-white/90 transition-all duration-200',
+            el: 'group relative px-3 py-2 rounded-md cursor-pointer flex items-center gap-3 transition-all duration-200 bg-white/60 dark:bg-neutral-700/40',
+            el_normal: 'hover:bg-blue-500/10 dark:hover:bg-blue-500/20 dark:text-white/90 text-neutral-700',
+            el_red: 'hover:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400',
             helper: 'absolute inset-0 rounded-md bg-gradient-to-br from-white/50 to-transparent dark:from-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200',
             svg: 'w-4 h-4 relative z-10',
             span: 'font-medium relative z-10',

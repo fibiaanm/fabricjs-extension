@@ -69,7 +69,7 @@ export class RotationPointCustomization {
             x: 0,
             y: -0.5,
             offsetX: 0,
-            offsetY: offsetY,
+            offsetY: offsetY * this.canvas.getRetinaScaling(),
             cursorStyle: 'crosshair',
             actionHandler: controlsUtils.rotationWithSnapping,
             actionName: 'rotate',

@@ -4,8 +4,10 @@ import {DialogWithButtonActions} from "./OpenDialogs/DialogWithButtonActions.ts"
 import {normalizeFabricCoords} from "../utils/normalizeFabricCoords.ts";
 import {lockingObjectActions} from "../utils/lockingObjectActions.ts";
 import {CreateCropShapes} from "../pages/objects/CreateCropShapes.ts";
-import {DecisionAction, ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {ContextualProperties, DecisionAction, ExecutableActions} from "./interfaces/ExecutableActions.ts";
 import {buttonCallbacks} from "./interfaces/DialogProperties.ts";
+import cropSVG from "../resources/cropSVG.ts";
+import { onlyVisibleWhenObjectIsSelected } from "./OpenDialogs/ContextMenuItemVisibility.ts";
 
 export type CropActiveElementConfig = {} & DecisionAction;
 
@@ -18,10 +20,16 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private dialog: DialogWithButtonActions | undefined;
 
     private config: CropActiveElementConfig = {}
-    public contextual = {
+    public contextual: ContextualProperties[] = [{
         name: 'Crop',
         order: '2,0',
-    }
+        svg: cropSVG,
+        shortcut: {
+            key: 'x',
+        },
+        visibility: () => onlyVisibleWhenObjectIsSelected(this.canvas),
+        execute: this.execute.bind(this),
+    }]
 
     static build(canvas: Canvas, config: CropActiveElementConfig): CropActiveElement {
         const instance = new CropActiveElement(canvas);
