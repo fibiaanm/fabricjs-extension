@@ -10,6 +10,7 @@ Fabric.js Extension is a powerful enhancement for Fabric.js, introducing a rich 
 - Copy, Paste & Delete: Duplicate elements (Ctrl/Cmd + C), paste images or elements from other sources, and delete elements (Backspace).
 - Move & Transform: Move elements ("m"), rotate ("r"), or scale ("s") with ease.
 - Rotate by Interval: Rotate elements by set increments with Shift + rotate.
+- Crop Tool: Built-in functionality to crop images and shapes directly on the canvas.
 ### 🎨 Customization
 - Change Color: Quickly modify the color of selected elements ("c").
 - Rotation Point Customization: Adjust and customize rotation points for selected elements.
@@ -21,18 +22,32 @@ Install via npm:
 ```sh
 npm install fabricjs-extension
 ```
-Import into your Fabric.js project and start taking advantage of advanced controls for enhanced canvas editing.
-````javascript
+Import and initialize in your Fabric.js project:
+```javascript
 import { fabric } from "fabric";
-import { FabricJSExtension } from "fabricjs-extension";
+import { install } from "fabricjs-extension";
 
-// Initialize Fabric.js and apply the extension
+// Initialize Fabric.js
 const canvas = new fabric.Canvas("c");
-const fabricExtension = new FabricJSExtension(canvas);
-````
+
+// Apply the extension with custom configuration
+install(canvas, {
+    actionsToInstall: {
+        rotationPointCustomization: {},
+        rotateByInterval: {
+            steps: 15,
+        },
+        dropImagesOnCanvas: {
+            justCreateObject: true,
+        },
+        deleteActiveElement: {
+            justEmitEvent: true,
+        },
+    },
+});
+```
 ## 🚧 Working Features
 ### 📌 In Progress
-- Crop Functionality: Add a crop tool to allow users to select and crop specific areas of elements directly on the canvas, improving control over image and shape editing.
 - Layer Management: Add the ability to manage layers directly on the canvas, including layer ordering, hiding/showing layers, and locking layers.
 - Guidelines and Snap-to-Grid: Introduce customizable grid overlays and snapping functionality to assist with precise element placement.
 - Customizable Keyboard Shortcuts: Enable users to customize shortcuts for all actions, offering flexibility and adaptability for various workflows.

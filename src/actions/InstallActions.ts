@@ -8,7 +8,7 @@ import {Canvas} from "fabric";
 
 export class InstallActions {
 
-    public actions: any = {};
+    public actions: ExecutableActionsList = {};
 
     constructor(
         private canvas: Canvas
@@ -20,7 +20,7 @@ export class InstallActions {
         const initializers: ExecutableActionsList = {}
 
         for (const k in list) {
-            const key = k as ActionsAvailable;
+            const key = k as ActionsAvailable | keyof ExecutableActionsList;
             const action = list[key];
             let config: Object = {};
 
@@ -42,14 +42,21 @@ export class InstallActions {
                 this.canvas,
                 config ?? {}
             );
+
+            if (action.requiresActions) {
+                console.log('Requires actions', key, );
+                (initializers[key] as any).actions = initializers;
+            }
+
         }
 
         this.actions = initializers;
     }
 
     public uninstall() {
-        for (const key of Object.keys(this.actions)) {
-            this.actions[key].destroy();
+        for (const k of Object.keys(this.actions)) {
+            const key = k as ActionsAvailable | keyof ExecutableActionsList;
+            (this.actions[key] as any).destroy();
         }
     }
 }

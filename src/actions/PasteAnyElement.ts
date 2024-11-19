@@ -1,16 +1,30 @@
 import {Canvas, FabricObject} from "fabric";
 import {ObjectBuilder} from "../pages/objects/ObjectBuilder.ts";
-import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {ContextualProperties, ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import pasteSVG from "../resources/pasteSVG.ts";
 
 export type PasteAnyElementConfig = {
     allowExternalImages: boolean
 }
-export class PasteAnyElement implements ExecutableActions {
 
+export class PasteAnyElement implements ExecutableActions {
     private readonly listener: (ev: KeyboardEvent) => void;
     private config: PasteAnyElementConfig = {
         allowExternalImages: true
     };
+
+    public contextual: ContextualProperties[] = [{
+        name: 'Paste',
+        order: '1,1',
+        svg: pasteSVG,
+        shortcut: {
+            key: 'v',
+            ctrl: true,
+            meta: true,
+        },
+        visibility: () => 'hidden',
+        execute: this.execute.bind(this),
+    }]
 
     static build(
         canvas: Canvas,

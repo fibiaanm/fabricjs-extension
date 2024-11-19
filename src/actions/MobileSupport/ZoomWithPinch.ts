@@ -1,4 +1,4 @@
-import {Canvas, Point} from "fabric";
+import {Canvas, Point, TPointerEventInfo} from "fabric";
 import Position from "../../primitives/Position.ts";
 
 export class ZoomWithPinch {
@@ -32,7 +32,7 @@ export class ZoomWithPinch {
         // });
     }
 
-    private handleMouseMove(opt: any) {
+    private handleMouseMove(opt: TPointerEventInfo<TouchEvent>) {
         if (!opt.e.touches) return;
         
         const e = opt.e as TouchEvent;
@@ -41,8 +41,10 @@ export class ZoomWithPinch {
         const touchCount = e.touches.length;
         const activeObject = this.canvas.getActiveObject();
 
-        // Skip if there's an active object with single touch
-        if (activeObject && touchCount === 1) return;
+        if (activeObject && touchCount === 1) {
+            // Calculate time to determine if fire context menu or what action to take
+            return;
+        }
 
         this.canvas.selection = false;
 

@@ -93,7 +93,6 @@ const imagesLibrary = [
     'https://img.freepik.com/free-photo/long-shot-adult-nature-with-3d-geometric-shapes_23-2150697288.jpg',
     'https://img.freepik.com/free-photo/digital-environment-scene_23-2151873110.jpg',
     'https://cdn.pixabay.com/photo/2016/07/07/16/46/dice-1502706_640.jpg'
-
 ];
 const imagesLibraryContainer = document.getElementById('images-library')!;
 const CONTAINER_CLASS = 'w-1/2 md:w-1/3 lg:w-1/4 aspect-square flex items-center justify-center overflow-hidden cursor-pointer p-0.5';

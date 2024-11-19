@@ -5,7 +5,7 @@ export const page = (actions: ExecutableActionsList) => {
 
     return {
         zoomRatio: (props: contextualProps) => {
-            actions.changeZoomRatio?.execute(props.coords);
+            actions.changeZoomRatio?.execute(props);
         },
         panToCenter: () => {
             actions.panToCenter?.execute();

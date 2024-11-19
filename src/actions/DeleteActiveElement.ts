@@ -1,12 +1,15 @@
 import {Canvas} from "fabric";
 import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {extensionCustomWindowEvents} from "./list.ts";
 
-export type DeleteActiveElementConfig = boolean
+export type DeleteActiveElementConfig = {
+    justEmitEvent?: boolean
+}
 
 export class DeleteActiveElement implements ExecutableActions{
 
     private readonly listener: (ev: KeyboardEvent) => void;
-    private config: DeleteActiveElementConfig = true;
+    private config: DeleteActiveElementConfig = {};
 
     static build(
         canvas: Canvas,
@@ -20,7 +23,6 @@ export class DeleteActiveElement implements ExecutableActions{
     constructor(private canvas: Canvas) {
         this.listener = this.deleteActiveElement.bind(this);
         window.addEventListener("keydown", this.listener);
-        this.config;
     }
 
     private deleteActiveElement(ev: KeyboardEvent) {
@@ -32,6 +34,16 @@ export class DeleteActiveElement implements ExecutableActions{
     public execute() {
         const activeObject = this.canvas.getActiveObject();
         if (!activeObject) return;
+
+        if (this.config.justEmitEvent) {
+            const deleteEvent = new CustomEvent(extensionCustomWindowEvents.deleteActiveElement, {
+                detail: {
+                    object: activeObject
+                }
+            });
+            window.dispatchEvent(deleteEvent);
+            return;
+        }
         this.canvas.remove(activeObject);
     }
 

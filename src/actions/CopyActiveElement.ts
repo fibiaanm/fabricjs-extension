@@ -1,13 +1,28 @@
 import {Canvas} from "fabric";
 import {saveJsonToClipboard} from "../utils/saveJsonToClipboard.ts";
-import {ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {ContextualProperties, ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {onlyVisibleWhenObjectIsSelected} from "./OpenDialogs/ContextMenuItemVisibility.ts";
+import copySVG from "../resources/copySVG.ts";
 
 export type CopyActiveElementConfig = boolean
 
-export class CopyActiveElement implements ExecutableActions{
+export class CopyActiveElement implements ExecutableActions {
 
     private readonly listener: (ev: KeyboardEvent) => void;
     private config: CopyActiveElementConfig = true;
+
+    public contextual: ContextualProperties[] = [{
+        name: 'Copy',
+        order: '1,0',
+        svg: copySVG,
+        shortcut: {
+            key: 'c',
+            ctrl: true,
+            meta: true,
+        },
+        visibility: () => onlyVisibleWhenObjectIsSelected(this.canvas),
+        execute: this.execute.bind(this),
+    }]
 
     static build(
         canvas: Canvas,
