@@ -2,11 +2,23 @@ import {Canvas, FabricImage} from "fabric";
 import {ObjectBuilder} from "../pages/objects/ObjectBuilder";
 import {virtualizeToFabricCoords} from "../utils/virtualizeToFabricCoords.ts";
 import Position from "../primitives/Position.ts";
+import {extensionCustomWindowEvents} from "./list.ts";
+
+export type DropImagesOnCanvasConfig = {
+    justCreateObject?: boolean
+}
 
 export class DropImagesOnCanvas {
 
-    static build(canvas: Canvas) {
-        return new DropImagesOnCanvas(canvas);
+    config: DropImagesOnCanvasConfig = {};
+
+    static build(
+        canvas: Canvas,
+        config: DropImagesOnCanvasConfig
+    ): DropImagesOnCanvas {
+        const instance = new DropImagesOnCanvas(canvas);
+        instance.config = config;
+        return instance;
     }
 
     constructor(private canvas: Canvas) {
@@ -115,6 +127,17 @@ export class DropImagesOnCanvas {
                     left: this.vPosition.x - halfWidth,
                     top: this.vPosition.y - halfHeight,
                 });
+
+                if (this.config.justCreateObject) {
+                    const imageDroppedEvent = new CustomEvent(extensionCustomWindowEvents.imageDropped, {
+                        detail: {
+                            image
+                        }
+                    });
+                    window.dispatchEvent(imageDroppedEvent);
+                    return;
+                }
+
                 this.canvas.add(image);
                 this.canvas.setActiveObject(image);
                 this.canvas.renderAll();

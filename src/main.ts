@@ -21,7 +21,7 @@ export type { PanToCenterConfig } from "./actions/Canvas/PanToCenter";
 export type { ChangeZoomRatioConfig } from "./actions/ContextualActions/ChangeZoomRatio";
 export type { BringFrontActiveElementConfig } from "./actions/BringFrontActiveElement";
 export type { PushBackActiveElementConfig } from "./actions/pushBackActiveElement";
-export type { ExecutableActionsList } from "./actions/list";
-export type { ActionsToInstallConfig } from "./actions/list";
+export type { ExecutableActionsList, ActionsToInstallConfig, ActionsListBuilder } from "./actions/list";
 export type { ExecutableActionBuilder } from "./actions/interfaces/ExecutableActions";
-export type { ActionsListBuilder } from "./actions/list";
+
+export { extensionCustomWindowEvents } from "./actions/list";

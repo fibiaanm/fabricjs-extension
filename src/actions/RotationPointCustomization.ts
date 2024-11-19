@@ -54,7 +54,7 @@ export class RotationPointCustomization {
             fabricObject: FabricObject
         ) => {
             styleOverride;
-            const size = VirtualizeSize(18, this.canvas);
+            const size = VirtualizeSize(18 * this.canvas.getRetinaScaling(), this.canvas);
             ctx.save();
             ctx.translate(left, top);
             ctx.rotate(util.degreesToRadians(fabricObject.angle));

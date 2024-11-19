@@ -18,7 +18,7 @@ import {ChangeZoomRatio, ChangeZoomRatioConfig} from "./ContextualActions/Change
 import {BringFrontActiveElement, BringFrontActiveElementConfig} from "./BringFrontActiveElement.ts";
 import {PushBackActiveElement, PushBackActiveElementConfig} from "./pushBackActiveElement.ts";
 import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/ExecutableActions.ts";
-import {DropImagesOnCanvas} from "./DropImagesOnCanvas.ts";
+import {DropImagesOnCanvas, DropImagesOnCanvasConfig} from "./DropImagesOnCanvas.ts";
 import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
 import {ContextMenuHandler} from "./ContextMenuHandler.ts";
 
@@ -62,6 +62,11 @@ export type ExecutableActionsList = {
     [key in ActionsAvailable]?: ExecutableActions
 }
 
+export enum extensionCustomWindowEvents {
+    imageDropped = 'imageDropped',
+    deleteActiveElement = 'deleteActiveElement',
+}
+
 export type ActionsToInstallConfig = {
     '*'?: boolean
     'rotationPointCustomization'?: RotationPointCustomizationConfig,
@@ -80,7 +85,7 @@ export type ActionsToInstallConfig = {
     'bringFrontActiveElement'?: BringFrontActiveElementConfig,
     'pushBackActiveElement'?: PushBackActiveElementConfig,
     'changeZoomRatio'?: ChangeZoomRatioConfig,
-    'dropImagesOnCanvas'?: boolean,
+    'dropImagesOnCanvas'?: DropImagesOnCanvasConfig,
     'zoomWithPinch'?: boolean,
     'contextMenuHandler'?: boolean,
 }
