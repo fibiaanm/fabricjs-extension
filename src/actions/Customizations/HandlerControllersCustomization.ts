@@ -8,6 +8,7 @@ export type HandlerControllersCustomizationConfig = {
     cornerStyle?: 'circle' | 'rect';
     cornerSize?: number;
     rotatingPointOffset?: number;
+    cursorRotationSVG?: string;
 }
 
 export class HandlerControllersCustomization {
@@ -50,6 +51,9 @@ export class HandlerControllersCustomization {
             }
             if (this.config.rotatingPointOffset !== undefined) {
                 shape.controls.mtr.offsetY = this.config.rotatingPointOffset;
+            }
+            if (this.config.cursorRotationSVG !== undefined) {
+                shape.controls.mtr.cursorStyle = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(this.config.cursorRotationSVG)}") 12 12, crosshair`;
             }
         });
     }

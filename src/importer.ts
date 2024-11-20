@@ -5,6 +5,7 @@ import {ObjectBuilder} from "./pages/objects/ObjectBuilder.ts";
 import {randomHexColor} from "./utils/random.ts";
 import keyboardSVG from "./resources/keyboardSVG.ts";
 import {touchSetTest} from "./testCommands/touch.ts";
+import rotationCursorSVG from './resources/rotationCursorSVG.ts';
 
 declare global {
     interface Window {
@@ -40,6 +41,7 @@ window.touch = touchSetTest(mainCanvas);
             cornerStyle: 'circle',
             cornerSize: 10,
             borderScaleFactor: 2,
+            cursorRotationSVG: rotationCursorSVG,
         },
         '*': true,
         moveActiveElement: {
