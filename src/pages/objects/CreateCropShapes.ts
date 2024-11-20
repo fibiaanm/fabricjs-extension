@@ -26,6 +26,7 @@ export class CreateCropShapes {
             top: obj.top,
             fill: 'rgba(0,0,0,0.6)',
             selectable: false,
+            ignore: true,
         });
         const innerRect = new Rect({
             width: clipPathFrame.width,
@@ -34,6 +35,7 @@ export class CreateCropShapes {
             top: clipPathFrame.y,
             fill: 'rgba(0,0,0,1)',
             selectable: false,
+            ignore: true,
         });
         innerRect.globalCompositeOperation = 'destination-out';
 
@@ -41,6 +43,7 @@ export class CreateCropShapes {
             left: obj.left,
             top: obj.top,
             selectable: false,
+            ignore: true,
         });
 
         return {
@@ -95,6 +98,7 @@ export class CreateCropShapes {
             height: innerRect.height * innerRect.scaleY,
             fill: 'rgba(0,0,0,0)',
             selectable: true,
+            ignore: true,
         });
 
         const objWidth = obj.width * obj.scaleX;
