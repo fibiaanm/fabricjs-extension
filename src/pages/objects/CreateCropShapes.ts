@@ -62,13 +62,11 @@ export class CreateCropShapes {
             obj.height * obj.scaleY
         );
 
-        console.log('obj', obj.hasCrop());
         if (obj.hasCrop()) {
             const cropX = obj.cropX || 0;
             const cropY = obj.cropY || 0;
 
             const sourceElement = obj.getElement() as HTMLImageElement
-            console.log('sourceElement', sourceElement.naturalWidth, sourceElement.naturalHeight);
             const originalSize = new Size(
                 sourceElement.naturalWidth,
                 sourceElement.naturalHeight
