@@ -1,10 +1,6 @@
 {
   "name": "fabricjs-extension",
-<<<<<<< HEAD
   "version": "0.2.13",
-=======
-  "version": "0.2.12",
->>>>>>> d27060c19953457c69dcdd4e6b3e313232db604e
   "license": "MIT",
   "type": "module",
   "private": false,
