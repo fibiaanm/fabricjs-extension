@@ -77,6 +77,41 @@ export class RotationPointCustomization {
             withConnection: true,
             sizeX: 36,
             sizeY: 36,
+            mouseDownHandler: () => {
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === '0') {
+                        const activeObject = this.canvas.getActiveObject();
+                        if (activeObject) {
+                            const currentAngle = activeObject.angle;
+                            if (currentAngle === 0) return;
+                            const duration = 150; 
+                            const startAngle = currentAngle;
+                            const startTime = Date.now();
+
+                            const animateRotation = () => {
+                                const elapsed = Date.now() - startTime;
+                                const progress = Math.min(elapsed / duration, 1);
+                        
+                                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                                const currentAnimatedAngle = startAngle * (1 - easedProgress);
+                        
+                                activeObject.rotate(currentAnimatedAngle);
+                                this.canvas.fire('object:rotating', {
+                                    target: activeObject,
+                                    e: new MouseEvent('mousemove')
+                                } as any);
+                                activeObject.setCoords();
+                                this.canvas.renderAll();
+                        
+                                if (progress < 1) {
+                                    requestAnimationFrame(animateRotation);
+                                }
+                            }
+                            animateRotation();
+                        }
+                    }
+                })
+            }
         });
     }
 }
