@@ -77,6 +77,22 @@ export class RotationPointCustomization {
             withConnection: true,
             sizeX: 36,
             sizeY: 36,
+            mouseDownHandler: () => {
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === '0') {
+                        const activeObject = this.canvas.getActiveObject();
+                        if (activeObject) {
+                            activeObject.rotate(0);
+                            this.canvas.fire('object:rotating', {
+                                target: activeObject,
+                                e: new MouseEvent('mousemove')
+                            } as any);
+                            activeObject.setCoords();
+                            this.canvas.renderAll();
+                        }
+                    }
+                })
+            }
         });
     }
 }

@@ -30,7 +30,7 @@ export class LabelRotatingObject {
 
         
         canvas.on('object:added', (event) => {
-            const target = event.target;
+            const target = event.target as FabricObject;
             target.controls.helper = new Control({
                 x: 0,
                 y: -0.5,
@@ -38,7 +38,7 @@ export class LabelRotatingObject {
                 offsetX: 30,
                 render: (ctx: CanvasRenderingContext2D, left: number, top: number, fabricObject: FabricObject) => {
                     this.renderControl(ctx, left, top, canvas, fabricObject);
-                }
+                },
             })
         })
         
