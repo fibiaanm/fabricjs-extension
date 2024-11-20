@@ -54,7 +54,7 @@ export class RotationPointCustomization {
             fabricObject: FabricObject
         ) => {
             styleOverride;
-            const size = VirtualizeSize(18 * this.canvas.getRetinaScaling(), this.canvas);
+            const size = VirtualizeSize(36, this.canvas);
             ctx.save();
             ctx.translate(left, top);
             ctx.rotate(util.degreesToRadians(fabricObject.angle));
@@ -69,12 +69,14 @@ export class RotationPointCustomization {
             x: 0,
             y: -0.5,
             offsetX: 0,
-            offsetY: offsetY * this.canvas.getRetinaScaling(),
+            offsetY: offsetY * 2,
             cursorStyle: 'crosshair',
             actionHandler: controlsUtils.rotationWithSnapping,
             actionName: 'rotate',
             render: renderFunction,
-            withConnection: true
+            withConnection: true,
+            sizeX: 36,
+            sizeY: 36,
         });
     }
 }

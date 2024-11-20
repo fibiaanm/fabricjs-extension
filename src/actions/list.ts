@@ -22,6 +22,7 @@ import {DropImagesOnCanvas, DropImagesOnCanvasConfig} from "./DropImagesOnCanvas
 import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
 import {ContextMenuHandler} from "./ContextMenuHandler.ts";
 import { HandlerControllersCustomization, HandlerControllersCustomizationConfig } from "./Customizations/HandlerControllersCustomization.ts";
+import { LabelRotatingObject } from "./Helpers/LabelRotatingObject.ts";
 
 export const actionsList =  {
     // General actions
@@ -53,6 +54,9 @@ export const actionsList =  {
     // Mobile support:
     'zoomWithPinch': ZoomWithPinch,
     'contextMenuHandler': ContextMenuHandler,
+
+    // Helpers:
+    'labelRotatingObject': LabelRotatingObject,
 }
 
 export type ActionsListBuilder = {
@@ -91,4 +95,5 @@ export type ActionsToInstallConfig = {
     'dropImagesOnCanvas'?: DropImagesOnCanvasConfig,
     'zoomWithPinch'?: boolean,
     'contextMenuHandler'?: boolean,
+    'labelRotatingObject'?: boolean,
 }
