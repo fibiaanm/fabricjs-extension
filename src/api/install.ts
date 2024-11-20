@@ -1,15 +1,25 @@
-import {Canvas} from "fabric";
+import {Canvas, FabricObject} from "fabric";
 import {InstallActions} from "../actions/InstallActions.ts";
 import {ActionsAvailable, ActionsToInstallConfig} from "../actions/list.ts";
-import {activeObject, ActiveObjectAPI} from "./activeObject.ts";
-import {page, PageAPI} from "./page.ts";
+import {activeObject} from "./activeObject.ts";
+import {page} from "./page.ts";
 import { uninstall } from "./uninstall.ts";
+
+declare module 'fabric' {
+	interface FabricObject {
+		ignore: boolean;
+	}
+	interface SerializedObjectProps {
+		ignore: boolean;
+	}
+}
+FabricObject.customProperties = ['ignore'];
 
 export type installOptions = {
     actionsToInstall?: ActionsAvailable[] | '*' | ActionsToInstallConfig
 }
 
-export default (canvas: Canvas, options: installOptions = {}) => {
+const install = (canvas: Canvas, options: installOptions = {}) => {
     const installer = new InstallActions(canvas);
     installer.install(options.actionsToInstall);
     const actions = installer.actions;
@@ -20,8 +30,5 @@ export default (canvas: Canvas, options: installOptions = {}) => {
     };
 }
 
-export type FabricJsExt = {
-    activeObject: ActiveObjectAPI,
-    page: PageAPI,
-    uninstall: () => void,
-};
+export type FabricJsExt = ReturnType<typeof install>;
+export default install;
