@@ -22,7 +22,6 @@ export class InstallActions {
         for (const k in list) {
             const key = k as ActionsAvailable | keyof ExecutableActionsList;
             const action = list[key];
-            console.log('action', key, Array.isArray(actions), );
             let config: Object = {};
 
             if (Array.isArray(actions)){
@@ -46,7 +45,6 @@ export class InstallActions {
             );
 
             if (action.requiresActions) {
-                console.log('Requires actions', key, );
                 (initializers[key] as any).actions = initializers;
             }
 
