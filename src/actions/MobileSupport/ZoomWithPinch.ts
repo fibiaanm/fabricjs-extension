@@ -1,5 +1,6 @@
 import {Canvas, Point, TPointerEventInfo} from "fabric";
 import Position from "../../primitives/Position.ts";
+import { ExecutableActionsList } from "../list.ts";
 
 export class ZoomWithPinch {
     private initialDistance: number | null = null;
@@ -9,15 +10,19 @@ export class ZoomWithPinch {
     private readonly minZoom = 0.1;
     private readonly maxZoom = 10;
 
+    public actions: ExecutableActionsList = {};
+    static requiresActions = true;
     static build(canvas: Canvas) {
         return new ZoomWithPinch(canvas);
     }
+
 
     constructor(private canvas: Canvas) {
         this.initializeEventListeners();
     }
 
     private initializeEventListeners() {
+        this.canvas.on('mouse:down', this.handleMouseDown.bind(this));
         this.canvas.on('mouse:move', this.handleMouseMove.bind(this));
         this.canvas.on('mouse:up', this.handleMouseUp.bind(this));
         // const gesture = document.getElementById('gesture')!;
@@ -32,22 +37,33 @@ export class ZoomWithPinch {
         // });
     }
 
+    private touchingSetupAction: any = 0;
+
+    private handleMouseDown(opt: TPointerEventInfo<TouchEvent>) {
+        if (!opt.e.touches) return;
+        const e = opt.e as TouchEvent;
+        const activeObject = this.canvas.getActiveObject();
+        if (e.touches.length === 1 && activeObject) {
+            clearTimeout(this.touchingSetupAction);
+            this.touchingSetupAction = setTimeout(() => {
+                console.log('open context menu', this.actions);
+                if ('contextMenuHandler' in this.actions) {
+                    (this.actions['contextMenuHandler'] as any).execute({coords: new Position(e.touches[0].clientX, e.touches[0].clientY)});
+                }
+            }, 500);
+        }
+    }
+
     private handleMouseMove(opt: TPointerEventInfo<TouchEvent>) {
         if (!opt.e.touches) return;
-        
         const e = opt.e as TouchEvent;
-        e.preventDefault();
-
+        
         const touchCount = e.touches.length;
-        const activeObject = this.canvas.getActiveObject();
-
-        if (activeObject && touchCount === 1) {
-            // Calculate time to determine if fire context menu or what action to take
-            return;
-        }
-
         this.canvas.selection = false;
-
+        clearTimeout(this.touchingSetupAction);
+        const objectSelected = this.canvas.getActiveObject();
+        if (objectSelected) return;
+        
         if (touchCount === 1) {
             this.handleSingleTouch(e.touches[0]);
         } else if (touchCount === 2) {
@@ -161,6 +177,7 @@ export class ZoomWithPinch {
     }
 
     private resetState() {
+        clearTimeout(this.touchingSetupAction);
         this.lastPanPosition = null;
         this.initialDistance = null;
         this.initialZoom = null;

@@ -35,6 +35,7 @@ export type ContextualProperties = {
 export interface ExecutableActions {
     execute(params?: Object): void;
     contextual?: ContextualProperties[];
+    destroy?: () => void;
 }
 
 export interface ExecutableActionBuilder {
