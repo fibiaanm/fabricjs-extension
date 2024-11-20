@@ -34,6 +34,8 @@ export class RotationPointCustomization {
         return instance;
     }
 
+    private eventListener: null | ((e: KeyboardEvent) => void) = null;
+
     constructor(
         private canvas: Canvas
     ) {
@@ -42,7 +44,10 @@ export class RotationPointCustomization {
         canvas.on('object:added', (a    ) => {
             const object = a.target;
             object.controls.mtr = this.createRotationControl();
-        })
+        }),
+        canvas.on('selection:cleared', () => {
+            this.cleanup();
+        });
     }
 
     private createRotationControl(): Control {
@@ -78,7 +83,10 @@ export class RotationPointCustomization {
             sizeX: 36,
             sizeY: 36,
             mouseDownHandler: () => {
-                window.addEventListener('keydown', (e) => {
+                if (this.eventListener) {
+                    window.removeEventListener('keydown', this.eventListener);
+                }
+                this.eventListener = (e) => {
                     if (e.key === '0') {
                         const activeObject = this.canvas.getActiveObject();
                         if (activeObject) {
@@ -110,8 +118,16 @@ export class RotationPointCustomization {
                             animateRotation();
                         }
                     }
-                })
-            }
+                }
+                window.addEventListener('keydown', this.eventListener);
+            },
         });
+    }
+
+    cleanup() {
+        if (this.eventListener) {
+            window.removeEventListener('keydown', this.eventListener);
+            this.eventListener = null;
+        }
     }
 }
