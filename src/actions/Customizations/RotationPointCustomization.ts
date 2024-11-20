@@ -83,16 +83,13 @@ export class RotationPointCustomization {
             sizeX: 36,
             sizeY: 36,
             mouseDownHandler: () => {
-                if (this.eventListener) {
-                    window.removeEventListener('keydown', this.eventListener);
-                }
-                this.eventListener = (e) => {
+                const fun = (e: KeyboardEvent) => {
                     if (e.key === '0') {
                         const activeObject = this.canvas.getActiveObject();
                         if (activeObject) {
                             const currentAngle = activeObject.angle;
                             if (currentAngle === 0) return;
-                            const duration = 150; 
+                            const duration = 100;
                             const startAngle = currentAngle;
                             const startTime = Date.now();
 
@@ -119,8 +116,12 @@ export class RotationPointCustomization {
                         }
                     }
                 }
+                this.eventListener = fun.bind(this);
                 window.addEventListener('keydown', this.eventListener);
             },
+            mouseUpHandler: () => {
+                this.cleanup();
+            }
         });
     }
 
