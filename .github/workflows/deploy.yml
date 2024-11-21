@@ -27,17 +27,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build plugin
-        run: yarn build:plugin
-
-      - name: Publish plugin to NPM using secret environment variables
-        run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NPM_GRANULAR_ACCESS_TOKEN }}" > ~/.npmrc
-          npm publish
-
-      - name: Remove plugin folder
-        run: rm -rf dist
-
       - name: Build project
         run: yarn build:app
 
