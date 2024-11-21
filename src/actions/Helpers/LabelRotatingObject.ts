@@ -1,4 +1,5 @@
 import {Canvas, Control, FabricObject, util } from "fabric";
+import { VirtualizeSize } from "../../utils/virtualizeSize";
 
 export class LabelRotatingObject {
 
@@ -50,27 +51,34 @@ export class LabelRotatingObject {
         fabricObject: FabricObject
     ): void {
         if (this.isRotating) {
-            const angleText = `${this.currentAngle.toFixed(0)}°`,
-            borderRadius = 5,
-            rectWidth = 32,
-            rectHeight = 19,
-            textWidth = 6.01 * angleText.length - 2.317;
+            const angleText = `${this.currentAngle.toFixed(0)}°`;
+        
+            const size = VirtualizeSize(18, canvas);
+            const rectWidth = VirtualizeSize(36, canvas);
+            const rectHeight = VirtualizeSize(24, canvas);
+            const fontSize = VirtualizeSize(12, canvas);
+
+            ctx.font = `400 ${fontSize}px serif`;
+            const textWidth = ctx.measureText(angleText).width;
+
+            const borderRadius = size / 3;
 
             const { tl, br } = canvas.calcViewportBoundaries();
 
-            const translateX = Math.min(Math.max(left, tl.x), br.x - rectWidth);
-            const translateY = Math.min(Math.max(top, tl.y), br.y - rectHeight);
-            
+            const translateX = left + rectWidth / 4;
+            const translateY = top - rectHeight;
+            const clampedX = Math.min(Math.max(translateX, tl.x), br.x - rectWidth);
+            const clampedY = Math.min(Math.max(translateY, tl.y), br.y - rectHeight);
 
             ctx.save();
-            ctx.translate(translateX, translateY);
+            ctx.translate(clampedX, clampedY);
+            ctx.beginPath();
             ctx.rotate(util.degreesToRadians(fabricObject.angle));
             ctx.fillStyle = "rgba(37,38,39,0.9)";
             ctx.roundRect(0, 0, rectWidth, rectHeight, borderRadius);
             ctx.fill();
-            ctx.font = "400 13px serif";
             ctx.fillStyle = "hsla(0,0%, 100%, 0.9)";
-            ctx.fillText(angleText, rectWidth / 2 - textWidth / 2, rectHeight / 2 + 4);
+            ctx.fillText(angleText, (rectWidth - textWidth) / 2, rectHeight / 2 + fontSize / 4);
             ctx.restore();
         }
     }
