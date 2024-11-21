@@ -34,22 +34,75 @@ export class RotationPointCustomization {
         return instance;
     }
 
-    private eventListener: null | ((e: KeyboardEvent) => void) = null;
+    // private eventListener: null | ((e: KeyboardEvent) => void) = null;
+    private globalKeydownListener: ((e: KeyboardEvent) => void) | null = null;
 
     constructor(
         private canvas: Canvas
+        
     ) {
+        this.setupGlobalKeyListener();
+        this.setupCanvasEventListeners();
         this.config.svg && (RotationPointCustomization.svgSource = this.config.svg());
         RotationPointCustomization.svgResource.onload = () => {}
-        canvas.on('object:added', (a    ) => {
+        canvas.on('object:added', (a) => {
             const object = a.target;
             object.controls.mtr = this.createRotationControl();
-        }),
-        canvas.on('selection:cleared', () => {
-            this.cleanup();
         });
     }
 
+    private setupGlobalKeyListener(): void {
+        this.globalKeydownListener = (e: KeyboardEvent) => {
+            if (e.key === '0') {
+                this.rotateActiveObjectToZero();
+            }
+        };
+        window.addEventListener('keydown', this.globalKeydownListener);
+    }
+
+    private setupCanvasEventListeners(): void {
+        this.canvas.on('object:added', (event) => {
+            const object = event.target;
+            if (object) {
+                object.controls.mtr = this.createRotationControl();
+            }
+        });
+    }
+
+    private rotateActiveObjectToZero(): void {        
+        const activeObject = this.canvas.getActiveObject();
+        if (!activeObject) return;
+
+        const currentAngle = activeObject.angle;
+        if (currentAngle === 0) return;
+
+        const duration = 100;
+        const startAngle = currentAngle;
+        const startTime = Date.now();
+
+        const animateRotation = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+    
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            const currentAnimatedAngle = startAngle * (1 - easedProgress);
+    
+            activeObject.rotate(currentAnimatedAngle);
+            this.canvas.fire('object:rotating', {
+                target: activeObject,
+                e: new MouseEvent('mousemove')
+            } as any);
+            activeObject.setCoords();
+            this.canvas.renderAll();
+    
+            if (progress < 1) {
+                requestAnimationFrame(animateRotation);
+            }
+        };
+
+        animateRotation();
+    }
+    
     private createRotationControl(): Control {
         const renderFunction = (
             ctx: CanvasRenderingContext2D,
@@ -82,53 +135,6 @@ export class RotationPointCustomization {
             withConnection: true,
             sizeX: 36,
             sizeY: 36,
-            mouseDownHandler: () => {
-                const fun = (e: KeyboardEvent) => {
-                    if (e.key === '0') {
-                        const activeObject = this.canvas.getActiveObject();
-                        if (activeObject) {
-                            const currentAngle = activeObject.angle;
-                            if (currentAngle === 0) return;
-                            const duration = 100;
-                            const startAngle = currentAngle;
-                            const startTime = Date.now();
-
-                            const animateRotation = () => {
-                                const elapsed = Date.now() - startTime;
-                                const progress = Math.min(elapsed / duration, 1);
-                        
-                                const easedProgress = 1 - Math.pow(1 - progress, 3);
-                                const currentAnimatedAngle = startAngle * (1 - easedProgress);
-                        
-                                activeObject.rotate(currentAnimatedAngle);
-                                this.canvas.fire('object:rotating', {
-                                    target: activeObject,
-                                    e: new MouseEvent('mousemove')
-                                } as any);
-                                activeObject.setCoords();
-                                this.canvas.renderAll();
-                        
-                                if (progress < 1) {
-                                    requestAnimationFrame(animateRotation);
-                                }
-                            }
-                            animateRotation();
-                        }
-                    }
-                }
-                this.eventListener = fun.bind(this);
-                window.addEventListener('keydown', this.eventListener);
-            },
-            mouseUpHandler: () => {
-                this.cleanup();
-            }
         });
-    }
-
-    cleanup() {
-        if (this.eventListener) {
-            window.removeEventListener('keydown', this.eventListener);
-            this.eventListener = null;
-        }
     }
 }
