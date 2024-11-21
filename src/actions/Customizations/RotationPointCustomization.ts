@@ -5,13 +5,22 @@ import config from "../../config/config.ts";
 
 export type RotationPointCustomizationConfig = {
     svg?: () => string;
+    resetRotationShorcut?: {
+        key?: string;
+        enabled: boolean;
+    };
 }
 
 export class RotationPointCustomization {
 
     private static rotatingIcon: HTMLImageElement;
     private static svgSource: string = rotationSvg;
-    public config: RotationPointCustomizationConfig = {};
+    public config: RotationPointCustomizationConfig = {
+        resetRotationShorcut: {
+            key: '0',
+            enabled: true
+        }
+    };
 
     static get svgResource() {
         if (!RotationPointCustomization.rotatingIcon) {
@@ -30,7 +39,7 @@ export class RotationPointCustomization {
     static build(canvas: Canvas, config: RotationPointCustomizationConfig) {
         config.svg && (RotationPointCustomization.svgSource = config.svg());
         const instance = new RotationPointCustomization(canvas);
-        instance.config = config;
+        instance.config = {...instance.config, ...config};
         return instance;
     }
 
@@ -90,7 +99,8 @@ export class RotationPointCustomization {
     }
 
     private ReturnZeroRotate = (e: KeyboardEvent) => {
-        if (e.key !== '0') return;
+        if (!this.config.resetRotationShorcut?.enabled) return;
+        if (e.key !== this.config.resetRotationShorcut?.key) return;
         
         const activeObject = this.canvas.getActiveObject();
         if (!activeObject) return;
@@ -103,7 +113,7 @@ export class RotationPointCustomization {
         
         this.animateToZeroRotation(activeObject, currentAngle, startTime, duration);
     }
-    
+
     private animateToZeroRotation(activeObject: FabricObject, startAngle: number, startTime: number, duration: number) {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
