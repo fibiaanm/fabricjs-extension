@@ -49,7 +49,12 @@ window.touch = touchSetTest(mainCanvas);
                 console.log('moveActiveElement open', coords, update);
             },
         },
-        
+        rotationPointCustomization: {
+            resetRotationShorcut: {
+                key: '0',
+                enabled: true
+            }
+        }
     }
 });
 

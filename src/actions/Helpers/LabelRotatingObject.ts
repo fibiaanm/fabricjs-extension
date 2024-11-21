@@ -1,4 +1,3 @@
-// import config from "../config/config.ts";
 import {Canvas, Control, FabricObject, util } from "fabric";
 
 export class LabelRotatingObject {

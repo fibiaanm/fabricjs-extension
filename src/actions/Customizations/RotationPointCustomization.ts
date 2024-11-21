@@ -5,13 +5,22 @@ import config from "../../config/config.ts";
 
 export type RotationPointCustomizationConfig = {
     svg?: () => string;
+    resetRotationShorcut?: {
+        key?: string;
+        enabled: boolean;
+    };
 }
 
 export class RotationPointCustomization {
 
     private static rotatingIcon: HTMLImageElement;
     private static svgSource: string = rotationSvg;
-    public config: RotationPointCustomizationConfig = {};
+    public config: RotationPointCustomizationConfig = {
+        resetRotationShorcut: {
+            key: '0',
+            enabled: true
+        }
+    };
 
     static get svgResource() {
         if (!RotationPointCustomization.rotatingIcon) {
@@ -30,9 +39,11 @@ export class RotationPointCustomization {
     static build(canvas: Canvas, config: RotationPointCustomizationConfig) {
         config.svg && (RotationPointCustomization.svgSource = config.svg());
         const instance = new RotationPointCustomization(canvas);
-        instance.config = config;
+        instance.config = {...instance.config, ...config};
         return instance;
     }
+
+    private eventListener: null | ((e: KeyboardEvent) => void) = null;
 
     constructor(
         private canvas: Canvas
@@ -78,40 +89,55 @@ export class RotationPointCustomization {
             sizeX: 36,
             sizeY: 36,
             mouseDownHandler: () => {
-                window.addEventListener('keydown', (e) => {
-                    if (e.key === '0') {
-                        const activeObject = this.canvas.getActiveObject();
-                        if (activeObject) {
-                            const currentAngle = activeObject.angle;
-                            if (currentAngle === 0) return;
-                            const duration = 150; 
-                            const startAngle = currentAngle;
-                            const startTime = Date.now();
-
-                            const animateRotation = () => {
-                                const elapsed = Date.now() - startTime;
-                                const progress = Math.min(elapsed / duration, 1);
-                        
-                                const easedProgress = 1 - Math.pow(1 - progress, 3);
-                                const currentAnimatedAngle = startAngle * (1 - easedProgress);
-                        
-                                activeObject.rotate(currentAnimatedAngle);
-                                this.canvas.fire('object:rotating', {
-                                    target: activeObject,
-                                    e: new MouseEvent('mousemove')
-                                } as any);
-                                activeObject.setCoords();
-                                this.canvas.renderAll();
-                        
-                                if (progress < 1) {
-                                    requestAnimationFrame(animateRotation);
-                                }
-                            }
-                            animateRotation();
-                        }
-                    }
-                })
+                this.eventListener = this.ReturnZeroRotate.bind(this);
+                window.addEventListener('keydown', this.eventListener);
+            },
+            mouseUpHandler: () => {
+                this.destroy();
             }
         });
+    }
+
+    private ReturnZeroRotate = (e: KeyboardEvent) => {
+        if (!this.config.resetRotationShorcut?.enabled) return;
+        if (e.key !== this.config.resetRotationShorcut?.key) return;
+        
+        const activeObject = this.canvas.getActiveObject();
+        if (!activeObject) return;
+        
+        const currentAngle = activeObject.angle;
+        if (currentAngle === 0) return;
+
+        const duration = 100;
+        const startTime = Date.now();
+        
+        this.animateToZeroRotation(activeObject, currentAngle, startTime, duration);
+    }
+
+    private animateToZeroRotation(activeObject: FabricObject, startAngle: number, startTime: number, duration: number) {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3); // cubic easing
+        const currentAnimatedAngle = startAngle * (1 - easedProgress);
+
+        activeObject.rotate(currentAnimatedAngle);
+        this.canvas.fire('object:rotating', {
+            target: activeObject,
+            e: new MouseEvent('mousemove')
+        } as any);
+        
+        activeObject.setCoords();
+        this.canvas.renderAll();
+
+        if (progress < 1) {
+            requestAnimationFrame(() => this.animateToZeroRotation(activeObject, startAngle, startTime, duration));
+        }
+    }
+
+    destroy() {
+        if (this.eventListener) {
+            window.removeEventListener('keydown', this.eventListener);
+            this.eventListener = null;
+        }
     }
 }
