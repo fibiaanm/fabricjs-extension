@@ -47,42 +47,6 @@ export class RotationPointCustomization {
         })
     }
 
-    private ReturnZeroRotate = (e: KeyboardEvent) => {
-        if (e.key === '0') {
-            console.log('return zero');
-            
-            const activeObject = this.canvas.getActiveObject();
-            if (activeObject) {
-                const currentAngle = activeObject.angle;
-                if (currentAngle === 0) return;
-                const duration = 100;
-                const startAngle = currentAngle;
-                const startTime = Date.now();
-
-                const animateRotation = () => {
-                    const elapsed = Date.now() - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-            
-                    const easedProgress = 1 - Math.pow(1 - progress, 3);
-                    const currentAnimatedAngle = startAngle * (1 - easedProgress);
-            
-                    activeObject.rotate(currentAnimatedAngle);
-                    this.canvas.fire('object:rotating', {
-                        target: activeObject,
-                        e: new MouseEvent('mousemove')
-                    } as any);
-                    activeObject.setCoords();
-                    this.canvas.renderAll();
-            
-                    if (progress < 1) {
-                        requestAnimationFrame(animateRotation);
-                    }
-                }
-                animateRotation();
-            }
-        }
-    }
-
     private createRotationControl(): Control {
         const renderFunction = (
             ctx: CanvasRenderingContext2D,
@@ -123,6 +87,41 @@ export class RotationPointCustomization {
                 this.destroy();
             }
         });
+    }
+
+    private ReturnZeroRotate = (e: KeyboardEvent) => {
+        if (e.key !== '0') return;
+        
+        const activeObject = this.canvas.getActiveObject();
+        if (!activeObject) return;
+        
+        const currentAngle = activeObject.angle;
+        if (currentAngle === 0) return;
+
+        const duration = 100;
+        const startTime = Date.now();
+        
+        this.animateToZeroRotation(activeObject, currentAngle, startTime, duration);
+    }
+    
+    private animateToZeroRotation(activeObject: FabricObject, startAngle: number, startTime: number, duration: number) {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = 1 - Math.pow(1 - progress, 3); // cubic easing
+        const currentAnimatedAngle = startAngle * (1 - easedProgress);
+
+        activeObject.rotate(currentAnimatedAngle);
+        this.canvas.fire('object:rotating', {
+            target: activeObject,
+            e: new MouseEvent('mousemove')
+        } as any);
+        
+        activeObject.setCoords();
+        this.canvas.renderAll();
+
+        if (progress < 1) {
+            requestAnimationFrame(() => this.animateToZeroRotation(activeObject, startAngle, startTime, duration));
+        }
     }
 
     destroy() {
