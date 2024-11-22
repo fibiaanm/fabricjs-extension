@@ -1,34 +1,28 @@
 name: Publish Plugin
 
 on:
-  workflow_run:
-    workflows: ["Build and Deploy to GitHub Pages"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   publish-plugin:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
 
-      # Step 3: Authenticate with npm
-      - name: Authenticate to npm registry
+      - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_GRANULAR_ACCESS_TOKEN }}
-
-      # Step 4: Publish plugin
-      - name: Publish plugin to npm
         run: |
           yarn install
           npm publish --access public
