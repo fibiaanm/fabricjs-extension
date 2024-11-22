@@ -142,24 +142,36 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     async setupCrop() {
         const obj = this.activeObject as FabricImage;
         lockingObjectActions(obj, true);
+        const currentAngle = obj.angle;
+        
+        obj.set({ angle: 0 });
+        obj.setCoords();
+    
         const createCropShapes = new CreateCropShapes(obj);
         const {
             cutOutGroup,
             innerRect,
             outerRect,
         } = createCropShapes.createCropBox();
+        
         const controller = createCropShapes.createControllerBox({
             cutOutGroup,
             innerRect,
             outerRect,
-        });
-
+        }, currentAngle);
+    
+        cutOutGroup.set({ angle: currentAngle });
+        controller.set({ angle: currentAngle });
+    
         this.canvas.add(cutOutGroup);
         this.canvas.add(controller);
         controller.controls.mtr.visible = false;
         this.canvas.setActiveObject(controller);
-
+    
         this.cropHelpers.push(cutOutGroup);
         this.cropHelpers.push(controller);
+    
+        obj.set({ angle: currentAngle });
+        obj.setCoords();
     }
 }
