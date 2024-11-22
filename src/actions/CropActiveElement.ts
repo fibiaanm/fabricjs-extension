@@ -47,6 +47,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             !!this.activeObject && lockingObjectActions(this.activeObject, false);
             !!this.dialog && this.dialog.close();
             this.removeHelpers();
+            animationRotateToAngle(this.activeObject as FabricImage, this.originalAngle || 0, 100, this.canvas);
             this.dialog = undefined;
             this.activeObject = undefined;
 
@@ -86,7 +87,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             width: cropControlBox.width * cropControlBox.scaleX / obj.scaleX,
             height: cropControlBox.height * cropControlBox.scaleY / obj.scaleY,
         })
-        // obj.rotate(this.originalAngle || 0);
         animationRotateToAngle(obj, this.originalAngle || 0, 100, this.canvas);
         obj.setCoords();
         this.canvas.setActiveObject(obj);
@@ -105,7 +105,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     cancel(): void {
         const obj = this.activeObject as FabricImage;
         if (obj && this.originalAngle !== undefined) {
-            // obj.rotate(this.originalAngle);
             animationRotateToAngle(obj, this.originalAngle, 100, this.canvas);
             obj.setCoords();
         }
