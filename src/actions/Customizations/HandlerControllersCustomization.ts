@@ -1,4 +1,5 @@
 import { Canvas, FabricObject } from "fabric";
+import { VirtualizeSize } from "../../utils/virtualizeSize";
 
 export type HandlerControllersCustomizationConfig = {
     transparentCorners?: boolean;
@@ -49,8 +50,8 @@ export class HandlerControllersCustomization {
             if (this.config.cornerSize !== undefined) {
                 shape.cornerSize = this.config.cornerSize;
             }
-            if (this.config.rotatingPointOffset !== undefined) {
-                shape.controls.mtr.offsetY = this.config.rotatingPointOffset;
+            if (this.config.rotatingPointOffset !== undefined) {            
+                shape.controls.mtr.offsetY = VirtualizeSize(this.config.rotatingPointOffset, this.canvas);
             }
             if (this.config.cursorRotationSVG !== undefined) {
                 shape.controls.mtr.cursorStyle = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(this.config.cursorRotationSVG)}") 12 12, crosshair`;
