@@ -8,6 +8,7 @@ import {ContextualProperties, DecisionAction, ExecutableActions} from "./interfa
 import {buttonCallbacks} from "./interfaces/DialogProperties.ts";
 import cropSVG from "../resources/cropSVG.ts";
 import { onlyVisibleWhenObjectIsSelected } from "./OpenDialogs/ContextMenuItemVisibility.ts";
+import {extensionCustomWindowEvents} from "./list.ts";
 
 export type CropActiveElementConfig = {} & DecisionAction;
 
@@ -46,6 +47,9 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             this.removeHelpers();
             this.dialog = undefined;
             this.activeObject = undefined;
+
+            const cropCanceledEvent = new CustomEvent(extensionCustomWindowEvents.cropCanceled);
+            window.dispatchEvent(cropCanceledEvent);
         }
 
         canvas.on('selection:cleared', () => {
