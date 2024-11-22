@@ -1,10 +1,10 @@
 name: Publish Plugin
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy Application"]
+    types:
+      - completed
 
 jobs:
   publish-plugin:
