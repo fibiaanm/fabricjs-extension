@@ -23,5 +23,6 @@ export type { BringFrontActiveElementConfig } from "./actions/BringFrontActiveEl
 export type { PushBackActiveElementConfig } from "./actions/pushBackActiveElement";
 export type { ExecutableActionsList, ActionsToInstallConfig, ActionsListBuilder } from "./actions/list";
 export type { ExecutableActionBuilder } from "./actions/interfaces/ExecutableActions";
+export type { buttonCallbacks } from "./actions/interfaces/DialogProperties";
 
 export { extensionCustomWindowEvents } from "./actions/list";
