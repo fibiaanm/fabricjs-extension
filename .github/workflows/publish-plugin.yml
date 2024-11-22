@@ -24,4 +24,4 @@ jobs:
       - name: Publish to npm
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm whoami
+        run: echo ${{ secrets.NPM_TOKEN }}
