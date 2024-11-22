@@ -85,7 +85,6 @@ export class CreateCropShapes {
         return objectRectangle;
     }
 
-
     public createControllerBox(cropBox: TCreateCropBox): FabricObject {
         const {innerRect, cutOutGroup} = cropBox;
         const obj = this.activeObject;
@@ -147,34 +146,35 @@ export class CreateCropShapes {
     }
 
     private configureControlBox(controller: Rect) {
-        const CONTROL_CONFIG = config('objects.cropBox') as CropBoxConfig
-
+        const CONTROL_CONFIG = config('objects.cropBox') as CropBoxConfig;
+    
         const createControlRender = (type: 'edge' | 'corner', isHorizontal: boolean = false) => {
             return (ctx: CanvasRenderingContext2D, left: number, top: number) => {
                 ctx.save();
                 ctx.translate(left, top);
+                ctx.rotate(( this.activeObject.angle * Math.PI) / 180);
                 ctx.fillStyle = CONTROL_CONFIG.FILL_STYLE;
-
+    
                 if (type === 'edge') {
                     const { WIDTH, HEIGHT } = isHorizontal ? CONTROL_CONFIG.EDGE.HORIZONTAL : CONTROL_CONFIG.EDGE.VERTICAL;
-                    ctx.roundRect(-WIDTH/2, -HEIGHT/2, WIDTH, HEIGHT, CONTROL_CONFIG.EDGE.CORNER_RADIUS);
+                    ctx.roundRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT, CONTROL_CONFIG.EDGE.CORNER_RADIUS);
                 } else {
                     const { SIZE, CORNER_RADIUS } = CONTROL_CONFIG.CORNER;
-                    ctx.roundRect(-SIZE/2, -SIZE/2, SIZE, SIZE, CORNER_RADIUS);
+                    ctx.roundRect(-SIZE / 2, -SIZE / 2, SIZE, SIZE, CORNER_RADIUS);
                 }
                 ctx.stroke();
                 ctx.fill();
                 ctx.restore();
             };
         };
-
+    
         const configureControls = (controlPositions: readonly string[], type: 'edge' | 'corner') => {
             controlPositions.forEach(position => {
                 const control = controller.controls[position];
                 const isHorizontal = type === 'edge' && (position === 'mt' || position === 'mb');
-
+    
                 control.render = createControlRender(type, isHorizontal);
-
+    
                 if (type === 'edge') {
                     const { WIDTH, HEIGHT } = isHorizontal ? CONTROL_CONFIG.EDGE.HORIZONTAL : CONTROL_CONFIG.EDGE.VERTICAL;
                     control.sizeX = WIDTH;
@@ -185,7 +185,7 @@ export class CreateCropShapes {
                 }
             });
         };
-
+    
         configureControls(['mt', 'mb', 'ml', 'mr'] as const, 'edge');
         configureControls(['tl', 'tr', 'bl', 'br'] as const, 'corner');
         controller.setCoords();

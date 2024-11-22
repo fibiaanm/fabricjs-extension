@@ -9,6 +9,7 @@ import {buttonCallbacks} from "./interfaces/DialogProperties.ts";
 import cropSVG from "../resources/cropSVG.ts";
 import { onlyVisibleWhenObjectIsSelected } from "./OpenDialogs/ContextMenuItemVisibility.ts";
 import {extensionCustomWindowEvents} from "./list.ts";
+import { animationRotateToAngle } from "../utils/animationRotateToAngle.ts";
 
 export type CropActiveElementConfig = {} & DecisionAction;
 
@@ -19,7 +20,8 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
 
     private cropHelpers: FabricObject[] = [];
     private dialog: DialogWithButtonActions | undefined;
-
+    private originalAngle: number | undefined;
+    
     private config: CropActiveElementConfig = {}
     public contextual: ContextualProperties[] = [{
         name: 'Crop',
@@ -45,6 +47,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             !!this.activeObject && lockingObjectActions(this.activeObject, false);
             !!this.dialog && this.dialog.close();
             this.removeHelpers();
+            animationRotateToAngle(this.activeObject as FabricImage, this.originalAngle || 0, 100, this.canvas);
             this.dialog = undefined;
             this.activeObject = undefined;
 
@@ -74,6 +77,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     apply(): void {
         const cropControlBox = this.cropHelpers[1];
         const obj = this.activeObject as Rect;
+        if (!obj) return;
 
         obj.set({
             cropX: (cropControlBox.left - obj.left) / obj.scaleX,
@@ -83,19 +87,32 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             width: cropControlBox.width * cropControlBox.scaleX / obj.scaleX,
             height: cropControlBox.height * cropControlBox.scaleY / obj.scaleY,
         })
+        animationRotateToAngle(obj, this.originalAngle || 0, 100, this.canvas);
         obj.setCoords();
         this.canvas.setActiveObject(obj);
         lockingObjectActions(obj, false);
         this.removeHelpers();
 
+        if (this.dialog) {
+            this.dialog.close();
+        }
+    
         this.activeObject = undefined;
         this.dialog = undefined;
+        this.originalAngle = undefined;
     }
 
     cancel(): void {
+        const obj = this.activeObject as FabricImage;
+        if (obj && this.originalAngle !== undefined) {
+            animationRotateToAngle(obj, this.originalAngle, 100, this.canvas);
+            obj.setCoords();
+        }
+
         this.removeHelpers();
         this.activeObject = undefined;
         this.dialog = undefined;
+        this.originalAngle = undefined;
     }
 
     clear(): void {
@@ -104,6 +121,12 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     start(ev: KeyboardEvent): void {
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
+        }
+        if (ev.key === 'Escape') {
+            this.cancel();
+        }
+        if (ev.key === 'Enter') {
+            this.apply();
         }
     }
 
@@ -142,24 +165,32 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     async setupCrop() {
         const obj = this.activeObject as FabricImage;
         lockingObjectActions(obj, true);
-        const createCropShapes = new CreateCropShapes(obj);
-        const {
-            cutOutGroup,
-            innerRect,
-            outerRect,
-        } = createCropShapes.createCropBox();
-        const controller = createCropShapes.createControllerBox({
-            cutOutGroup,
-            innerRect,
-            outerRect,
+        
+        this.originalAngle = obj.angle;
+        
+        animationRotateToAngle(obj, 0, 100, this.canvas, () => {
+            const createCropShapes = new CreateCropShapes(obj);
+            const {
+                cutOutGroup,
+                innerRect,
+                outerRect,
+            } = createCropShapes.createCropBox();
+            
+            const controller = createCropShapes.createControllerBox({
+                cutOutGroup,
+                innerRect,
+                outerRect,
+            });
+        
+            this.canvas.add(cutOutGroup);
+            this.canvas.add(controller);
+            controller.controls.mtr.visible = false;
+            this.canvas.setActiveObject(controller);
+        
+            this.cropHelpers.push(cutOutGroup);
+            this.cropHelpers.push(controller);
         });
-
-        this.canvas.add(cutOutGroup);
-        this.canvas.add(controller);
-        controller.controls.mtr.visible = false;
-        this.canvas.setActiveObject(controller);
-
-        this.cropHelpers.push(cutOutGroup);
-        this.cropHelpers.push(controller);
+        
+        obj.setCoords();
     }
 }
