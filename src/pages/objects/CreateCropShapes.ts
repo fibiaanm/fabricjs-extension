@@ -85,8 +85,7 @@ export class CreateCropShapes {
         return objectRectangle;
     }
 
-
-    public createControllerBox(cropBox: TCreateCropBox, currentAngle: number): FabricObject {
+    public createControllerBox(cropBox: TCreateCropBox): FabricObject {
         const {innerRect, cutOutGroup} = cropBox;
         const obj = this.activeObject;
         const controller = new Rect({
@@ -142,18 +141,18 @@ export class CreateCropShapes {
         controller.on('moving', setOnInnerRect);
         controller.on('scaling', setOnInnerRect);
 
-        this.configureControlBox(controller, currentAngle);
+        this.configureControlBox(controller);
         return controller;
     }
 
-    private configureControlBox(controller: Rect, currentAngle: number) {
+    private configureControlBox(controller: Rect) {
         const CONTROL_CONFIG = config('objects.cropBox') as CropBoxConfig;
     
         const createControlRender = (type: 'edge' | 'corner', isHorizontal: boolean = false) => {
             return (ctx: CanvasRenderingContext2D, left: number, top: number) => {
                 ctx.save();
                 ctx.translate(left, top);
-                ctx.rotate((currentAngle * Math.PI) / 180);
+                ctx.rotate(( this.activeObject.angle * Math.PI) / 180);
                 ctx.fillStyle = CONTROL_CONFIG.FILL_STYLE;
     
                 if (type === 'edge') {

@@ -2,6 +2,7 @@ import {Canvas, Control, controlsUtils, FabricObject, util} from "fabric";
 import rotationSvg from "../../resources/rotationSvg.ts";
 import {VirtualizeSize} from "../../utils/virtualizeSize.ts";
 import config from "../../config/config.ts";
+import { animationRotateToAngle } from "../../utils/animationRotateToAngle.ts";
 
 export type RotationPointCustomizationConfig = {
     svg?: () => string;
@@ -109,29 +110,12 @@ export class RotationPointCustomization {
         if (currentAngle === 0) return;
 
         const duration = 100;
-        const startTime = Date.now();
         
-        this.animateToZeroRotation(activeObject, currentAngle, startTime, duration);
-    }
-
-    private animateToZeroRotation(activeObject: FabricObject, startAngle: number, startTime: number, duration: number) {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = 1 - Math.pow(1 - progress, 3); // cubic easing
-        const currentAnimatedAngle = startAngle * (1 - easedProgress);
-
-        activeObject.rotate(currentAnimatedAngle);
+        animationRotateToAngle(activeObject, 0, duration, this.canvas);
         this.canvas.fire('object:rotating', {
             target: activeObject,
             e: new MouseEvent('mousemove')
         } as any);
-        
-        activeObject.setCoords();
-        this.canvas.renderAll();
-
-        if (progress < 1) {
-            requestAnimationFrame(() => this.animateToZeroRotation(activeObject, startAngle, startTime, duration));
-        }
     }
 
     destroy() {
