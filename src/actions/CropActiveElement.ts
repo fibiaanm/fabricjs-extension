@@ -29,9 +29,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private cropHelpers: FabricObject[] = [];
     private dialog: DialogWithButtonActions | undefined;
     private originalAngle: number | undefined;
-
     private lastAppliedCropParams: CropParams | undefined;
-    private originalDimensions: CropParams | undefined;
     
     private config: CropActiveElementConfig = {}
     public contextual: ContextualProperties[] = [{
@@ -95,17 +93,10 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private activeElementIsCropped(): boolean {
         if (!this.activeObject) return false;
         const obj = this.activeObject as FabricImage;
+        console.log('obj:::', obj);
         
-        if (!this.originalDimensions || typeof obj.cropX !== 'number') return false;
         
-        return (
-            obj.cropX !== 0 || 
-            obj.cropY !== 0 || 
-            obj.width !== this.originalDimensions.width || 
-            obj.height !== this.originalDimensions.height,
-            obj.left !== this.originalDimensions.left ||
-            obj.top !== this.originalDimensions.top
-        );
+        return false
     }
 
     public objectStatus(): {} {
@@ -150,9 +141,8 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.originalAngle = undefined;
     }
 
-    cancel(): void {   
+    cancel(): void {            
         const obj = this.activeObject as FabricImage;
-        if (!obj) return;
         if (obj && this.originalAngle !== undefined) {
             animationRotateToAngle({
                 activeObject: obj,
@@ -196,6 +186,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
                 duration: 100,
                 canvas: this.canvas,
             })
+            this.canvas.setActiveObject(obj);
             obj.setCoords();
         }
 
@@ -209,7 +200,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
         }
-        if (ev.key === 'c' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+        if (ev.key === 'c' ) {
             this.clear();
         }
         if (ev.key === 'Escape') {
@@ -253,16 +244,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     async setupCrop() {        
-        const obj = this.activeObject as FabricImage;        
-
-        this.originalDimensions = {
-            width: obj.width,
-            height: obj.height,
-            cropX: obj.cropX || 0,
-            cropY: obj.cropY || 0,
-            left: obj.left,
-            top: obj.top,
-        };
+        const obj = this.activeObject as FabricImage; 
 
         lockingObjectActions(obj, true);
         
