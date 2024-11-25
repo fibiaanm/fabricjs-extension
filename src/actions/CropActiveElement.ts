@@ -12,6 +12,14 @@ import {extensionCustomWindowEvents} from "./list.ts";
 import { animationRotateToAngle } from "../utils/animationRotateToAngle.ts";
 
 export type CropActiveElementConfig = {} & DecisionAction;
+export type CropParams = {
+    cropX: number,
+    cropY: number,
+    width: number,
+    height: number,
+    left: number,
+    top: number,
+}
 
 export class CropActiveElement implements UserDependentActions, ExecutableActions {
 
@@ -21,6 +29,9 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private cropHelpers: FabricObject[] = [];
     private dialog: DialogWithButtonActions | undefined;
     private originalAngle: number | undefined;
+
+    private lastAppliedCropParams: CropParams | undefined;
+    private originalDimensions: CropParams | undefined;
     
     private config: CropActiveElementConfig = {}
     public contextual: ContextualProperties[] = [{
@@ -46,8 +57,15 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         const localClose = () => {
             !!this.activeObject && lockingObjectActions(this.activeObject, false);
             !!this.dialog && this.dialog.close();
+            !this.dialog && this.cancel();
+
             this.removeHelpers();
-            animationRotateToAngle(this.activeObject as FabricImage, this.originalAngle || 0, 100, this.canvas);
+            animationRotateToAngle({
+                activeObject: this.activeObject as FabricImage,
+                targetAngle: this.originalAngle || 0,
+                duration: 100,
+                canvas: this.canvas,
+            })
             this.dialog = undefined;
             this.activeObject = undefined;
 
@@ -74,20 +92,50 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.cropHelpers = [];
     }
 
+    private activeElementIsCropped(): boolean {
+        if (!this.activeObject) return false;
+        const obj = this.activeObject as FabricImage;
+        
+        if (!this.originalDimensions || typeof obj.cropX !== 'number') return false;
+        
+        return (
+            obj.cropX !== 0 || 
+            obj.cropY !== 0 || 
+            obj.width !== this.originalDimensions.width || 
+            obj.height !== this.originalDimensions.height,
+            obj.left !== this.originalDimensions.left ||
+            obj.top !== this.originalDimensions.top
+        );
+    }
+
+    public objectStatus(): {} {
+        return {
+            isCropped: this.activeElementIsCropped(),
+        }
+    }
+
     apply(): void {
         const cropControlBox = this.cropHelpers[1];
         const obj = this.activeObject as Rect;
         if (!obj) return;
 
-        obj.set({
+        const cropParams = {
             cropX: (cropControlBox.left - obj.left) / obj.scaleX,
-            left: cropControlBox.left,
             cropY: (cropControlBox.top - obj.top) / obj.scaleY,
-            top: cropControlBox.top,
             width: cropControlBox.width * cropControlBox.scaleX / obj.scaleX,
             height: cropControlBox.height * cropControlBox.scaleY / obj.scaleY,
-        })
-        animationRotateToAngle(obj, this.originalAngle || 0, 100, this.canvas);
+            left: cropControlBox.left,
+            top: cropControlBox.top,
+        }
+        
+        this.lastAppliedCropParams = { ...cropParams };
+        obj.set({ ...cropParams });
+        animationRotateToAngle({
+            activeObject: obj,
+            targetAngle: this.originalAngle || 0,
+            duration: 100,
+            canvas: this.canvas
+        });
         obj.setCoords();
         this.canvas.setActiveObject(obj);
         lockingObjectActions(obj, false);
@@ -102,10 +150,34 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.originalAngle = undefined;
     }
 
-    cancel(): void {
+    cancel(): void {   
         const obj = this.activeObject as FabricImage;
+        if (!obj) return;
         if (obj && this.originalAngle !== undefined) {
-            animationRotateToAngle(obj, this.originalAngle, 100, this.canvas);
+            animationRotateToAngle({
+                activeObject: obj,
+                targetAngle: this.originalAngle,
+                duration: 100,
+                canvas: this.canvas,
+            })
+            obj.setCoords();
+        }
+
+        if (this.lastAppliedCropParams) {
+            obj.set({
+                cropX: this.lastAppliedCropParams.cropX,
+                cropY: this.lastAppliedCropParams.cropY,
+                width: this.lastAppliedCropParams.width,
+                height: this.lastAppliedCropParams.height,
+                left: this.lastAppliedCropParams.left,
+                top: this.lastAppliedCropParams.top,
+            });
+            animationRotateToAngle({
+                activeObject: obj,
+                targetAngle: this.originalAngle || 0,
+                duration: 100,
+                canvas: this.canvas,
+            })
             obj.setCoords();
         }
 
@@ -116,11 +188,29 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     clear(): void {
+        const obj = this.activeObject as FabricImage;
+        if (obj && this.originalAngle !== undefined) {
+            animationRotateToAngle({
+                activeObject: obj,
+                targetAngle: this.originalAngle,
+                duration: 100,
+                canvas: this.canvas,
+            })
+            obj.setCoords();
+        }
+
+        this.removeHelpers();
+        this.activeObject = undefined;
+        this.dialog = undefined;
+        this.originalAngle = undefined;
     }
 
     start(ev: KeyboardEvent): void {
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
+        }
+        if (ev.key === 'c' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
+            this.clear();
         }
         if (ev.key === 'Escape') {
             this.cancel();
@@ -131,7 +221,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     execute() {
-        const activeElement = this.canvas.getActiveObject();
+        const activeElement = this.canvas.getActiveObject();   
         if (!activeElement) return;
         this.activeObject = activeElement;
         if (typeof (activeElement as any).cropX !== 'number') return
@@ -162,33 +252,45 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.dialog = dialog;
     }
 
-    async setupCrop() {
-        const obj = this.activeObject as FabricImage;
+    async setupCrop() {        
+        const obj = this.activeObject as FabricImage;        
+
+        this.originalDimensions = {
+            width: obj.width,
+            height: obj.height,
+            cropX: obj.cropX || 0,
+            cropY: obj.cropY || 0,
+            left: obj.left,
+            top: obj.top,
+        };
+
         lockingObjectActions(obj, true);
         
         this.originalAngle = obj.angle;
         
-        animationRotateToAngle(obj, 0, 100, this.canvas, () => {
-            const createCropShapes = new CreateCropShapes(obj);
-            const {
-                cutOutGroup,
-                innerRect,
-                outerRect,
-            } = createCropShapes.createCropBox();
-            
-            const controller = createCropShapes.createControllerBox({
-                cutOutGroup,
-                innerRect,
-                outerRect,
-            });
+        animationRotateToAngle({
+            activeObject: obj,
+            targetAngle: 0,
+            duration: 100,
+            canvas: this.canvas,
+            onComplete: () => {
+                const createCropShapes = new CreateCropShapes(obj);
+                const { cutOutGroup, innerRect, outerRect } = createCropShapes.createCropBox();
         
-            this.canvas.add(cutOutGroup);
-            this.canvas.add(controller);
-            controller.controls.mtr.visible = false;
-            this.canvas.setActiveObject(controller);
+                const controller = createCropShapes.createControllerBox({
+                    cutOutGroup,
+                    innerRect,
+                    outerRect,
+                });
         
-            this.cropHelpers.push(cutOutGroup);
-            this.cropHelpers.push(controller);
+                this.canvas.add(cutOutGroup);
+                this.canvas.add(controller);
+                controller.controls.mtr.visible = false;
+                this.canvas.setActiveObject(controller);
+        
+                this.cropHelpers.push(cutOutGroup);
+                this.cropHelpers.push(controller);
+            },
         });
         
         obj.setCoords();
