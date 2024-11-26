@@ -52,11 +52,6 @@ export const animationRotateToAngle = ({
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
-            // canvas.fire('object:rotating', {
-            //     target: activeObject,
-            //     e: new MouseEvent('mousemove'),
-            //     angle: targetAngle
-            // } as any);
             onComplete && onComplete();
         }
     };
