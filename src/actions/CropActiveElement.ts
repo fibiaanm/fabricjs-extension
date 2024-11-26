@@ -221,8 +221,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     start(ev: KeyboardEvent): void {
-        this.activeElementIsCropped();
-
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
         }
@@ -249,9 +247,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             cancel: this.cancel.bind(this),
             clear: this.clear.bind(this),
             objectStatus: this.objectStatus.bind(this),
-        }        
-
-        this.objectStatus();
+        }
     
         if (this.activeElementIsCropped()) {
             const obj = activeElement as FabricImage;
