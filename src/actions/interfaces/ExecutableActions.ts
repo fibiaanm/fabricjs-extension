@@ -1,4 +1,5 @@
 import Position from "../../primitives/Position.ts";
+import { objectElementStatus } from "../CropActiveElement.ts";
 import {buttonCallbacks} from "./DialogProperties.ts";
 
 export type oneInputUpdateCallback = (value: string) => void;
@@ -36,6 +37,7 @@ export interface ExecutableActions {
     execute(params?: Object): void;
     contextual?: ContextualProperties[];
     destroy?: () => void;
+    objectStatus?: () => objectElementStatus;
 }
 
 export interface ExecutableActionBuilder {

@@ -24,4 +24,5 @@ export type buttonCallbacks = {
     'accept': () => void;
     'cancel': () => void;
     'clear': () => void;
+    'objectStatus': () => void;
 }

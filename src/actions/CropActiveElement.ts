@@ -17,8 +17,10 @@ export type CropParams = {
     cropY: number,
     width: number,
     height: number,
-    left: number,
-    top: number,
+}
+
+export type objectElementStatus = {
+    hasClipping: boolean,
 }
 
 export class CropActiveElement implements UserDependentActions, ExecutableActions {
@@ -91,17 +93,40 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     private activeElementIsCropped(): boolean {
-        if (!this.activeObject) return false;
-        const obj = this.activeObject as FabricImage;
-        console.log('obj:::', obj);
+        const obj = this.canvas.getActiveObject() as FabricImage;        
+        const hasCropProperties = 
+            typeof obj.cropX === 'number' && 
+            typeof obj.cropY === 'number' && 
+            typeof obj.width === 'number' && 
+            typeof obj.height === 'number';
         
-        
-        return false
+    
+        if (!hasCropProperties) return false;
+    
+        const originalWidth = (obj.getElement() as HTMLImageElement).naturalWidth;
+        const originalHeight = (obj.getElement() as HTMLImageElement).naturalHeight;
+
+        const isCropped = 
+            obj.cropX !== 0 || 
+            obj.cropY !== 0 || 
+            obj.width !== originalWidth || 
+            obj.height !== originalHeight;
+    
+        if (isCropped) {
+            this.lastAppliedCropParams = {
+                cropX: obj.cropX,
+                cropY: obj.cropY,
+                width: obj.width,
+                height: obj.height,
+            };
+        }
+    
+        return isCropped;
     }
 
-    public objectStatus(): {} {
+    objectStatus(): objectElementStatus {        
         return {
-            isCropped: this.activeElementIsCropped(),
+            hasClipping: this.activeElementIsCropped(),
         }
     }
 
@@ -159,8 +184,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
                 cropY: this.lastAppliedCropParams.cropY,
                 width: this.lastAppliedCropParams.width,
                 height: this.lastAppliedCropParams.height,
-                left: this.lastAppliedCropParams.left,
-                top: this.lastAppliedCropParams.top,
             });
             animationRotateToAngle({
                 activeObject: obj,
@@ -194,9 +217,12 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
+        this.lastAppliedCropParams = undefined;
     }
 
     start(ev: KeyboardEvent): void {
+        this.objectStatus();
+
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
         }
@@ -222,6 +248,19 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             accept: this.apply.bind(this),
             cancel: this.cancel.bind(this),
             clear: this.clear.bind(this),
+            objectStatus: this.objectStatus.bind(this),
+        }        
+
+        this.objectStatus();
+    
+        if (this.activeElementIsCropped()) {
+            const obj = activeElement as FabricImage;
+            this.lastAppliedCropParams = {
+                cropX: obj.cropX,
+                cropY: obj.cropY,
+                width: obj.width,
+                height: obj.height,
+            };
         }
 
         this.setupCrop().then();

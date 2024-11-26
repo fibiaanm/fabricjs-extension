@@ -27,6 +27,9 @@ export const activeObject = (actions: ExecutableActionsList) => {
         },
         paste: () => {
             actions.pasteAnyElement?.execute();
+        },
+        objectStatus: () => {
+            return actions.cropActiveElement?.objectStatus && actions.cropActiveElement?.objectStatus();
         }
     }
 }
