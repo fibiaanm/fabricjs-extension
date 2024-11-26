@@ -108,10 +108,14 @@ export class RotationPointCustomization {
         
         const currentAngle = activeObject.angle;
         if (currentAngle === 0) return;
+        animationRotateToAngle({
+            activeObject,
+            targetAngle: 0,
+            duration: 100,
+            canvas: this.canvas,
+            showLabel: true,
+        })
 
-        const duration = 100;
-        
-        animationRotateToAngle(activeObject, 0, duration, this.canvas);
         this.canvas.fire('object:rotating', {
             target: activeObject,
             e: new MouseEvent('mousemove')

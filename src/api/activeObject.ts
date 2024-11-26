@@ -1,4 +1,4 @@
-import {ExecutableActionsList} from "../actions/list.ts";
+import {ExecutableActionsList, PropertiesObjectsList} from "../actions/list.ts";
 import {contextualProps} from "./main.ts";
 
 export const activeObject = (actions: ExecutableActionsList) => {
@@ -27,8 +27,18 @@ export const activeObject = (actions: ExecutableActionsList) => {
         },
         paste: () => {
             actions.pasteAnyElement?.execute();
-        }
+        },
     }
 }
 
+export const activeObjectStatus = (actions: PropertiesObjectsList) => {
+    return {
+        hasCropping: () => {
+            return actions.cropActiveElement?.activeElementIsCropped?.() ?? false;
+        }
+    }
+};
+
+
 export type ActiveObjectAPI = ReturnType<typeof activeObject>;
+export type ActiveObjectStatusAPI = ReturnType<typeof activeObjectStatus>;

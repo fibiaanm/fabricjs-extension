@@ -36,6 +36,11 @@ export interface ExecutableActions {
     execute(params?: Object): void;
     contextual?: ContextualProperties[];
     destroy?: () => void;
+    activeElementIsCropped?: () => boolean;
+}
+
+export interface PropertiesObjects {
+    activeElementIsCropped?: () => boolean;
 }
 
 export interface ExecutableActionBuilder {

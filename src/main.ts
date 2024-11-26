@@ -5,7 +5,7 @@ export { install, Position };
 import './index.css';
 
 export type { ActionsAvailable} from "./actions/list";
-export type {ActiveObjectAPI} from "./api/activeObject";
+export type {ActiveObjectAPI, ActiveObjectStatusAPI} from "./api/activeObject";
 export type {PageAPI} from "./api/page";
 export type {installOptions, FabricJsExt} from "./api/install";
 export type { RotationPointCustomizationConfig } from "./actions/Customizations/RotationPointCustomization.ts";
