@@ -1,4 +1,3 @@
-// import { PropertiesObjects } from "../actions/interfaces/ExecutableActions.ts";
 import {ExecutableActionsList, PropertiesObjectsList} from "../actions/list.ts";
 import {contextualProps} from "./main.ts";
 
