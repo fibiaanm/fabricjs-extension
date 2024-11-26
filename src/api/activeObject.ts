@@ -1,3 +1,4 @@
+// import { PropertiesObjects } from "../actions/interfaces/ExecutableActions.ts";
 import {ExecutableActionsList} from "../actions/list.ts";
 import {contextualProps} from "./main.ts";
 
@@ -26,12 +27,18 @@ export const activeObject = (actions: ExecutableActionsList) => {
             actions.copyActiveElement?.execute();
         },
         paste: () => {
-            actions.pasteAnyElement?.execute();
+            actions.pasteAnyElement?.execute?.();
         },
-        objectStatus: () => {
-            return actions.cropActiveElement?.objectStatus && actions.cropActiveElement?.objectStatus();
-        }
     }
 }
 
-export type ActiveObjectAPI = ReturnType<typeof activeObject>;
+export const activeObjectStatus = (actions: ExecutableActionsList) => {
+    return {
+        hasCropping: () => {
+            return actions.cropActiveElement?.activeElementIsCropped?.()
+        }
+    }
+};
+
+
+export type ActiveObjectAPI = ReturnType<typeof activeObject> | ReturnType<typeof activeObjectStatus>;

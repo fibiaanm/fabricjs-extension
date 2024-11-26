@@ -1,7 +1,7 @@
 import {Canvas, FabricObject} from "fabric";
 import {InstallActions} from "../actions/InstallActions.ts";
 import {ActionsAvailable, ActionsToInstallConfig} from "../actions/list.ts";
-import {activeObject} from "./activeObject.ts";
+import {activeObject, activeObjectStatus} from "./activeObject.ts";
 import {page} from "./page.ts";
 import { uninstall } from "./uninstall.ts";
 
@@ -25,6 +25,7 @@ const install = (canvas: Canvas, options: installOptions = {}) => {
     const actions = installer.actions;
     return {
         activeObject: activeObject.call(this, actions),
+        activeObjectStatus: activeObjectStatus.call(this, actions),
         page: page.call(this, actions),
         uninstall: uninstall.bind(this, actions, canvas),
     };

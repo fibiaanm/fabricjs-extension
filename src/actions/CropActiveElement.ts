@@ -19,10 +19,6 @@ export type CropParams = {
     height: number,
 }
 
-export type objectElementStatus = {
-    hasClipping: boolean,
-}
-
 export class CropActiveElement implements UserDependentActions, ExecutableActions {
 
     private activeObject: FabricObject | undefined;
@@ -92,49 +88,55 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.cropHelpers = [];
     }
 
-    private activeElementIsCropped(): boolean {
-        const obj = this.canvas.getActiveObject() as FabricImage;        
+    private compareCropParams(obj: FabricImage): boolean {
+        if (!this.lastAppliedCropParams) return false;
+    
+        return (
+            this.lastAppliedCropParams.cropX === obj.cropX &&
+            this.lastAppliedCropParams.cropY === obj.cropY &&
+            this.lastAppliedCropParams.width === obj.width &&
+            this.lastAppliedCropParams.height === obj.height
+        );
+    }
+
+    activeElementIsCropped(): boolean {        
+        const obj = this.canvas.getActiveObject() as FabricImage;
+        if (!obj) return false;
+    
         const hasCropProperties = 
             typeof obj.cropX === 'number' && 
             typeof obj.cropY === 'number' && 
             typeof obj.width === 'number' && 
             typeof obj.height === 'number';
-        
     
         if (!hasCropProperties) return false;
     
         const originalWidth = (obj.getElement() as HTMLImageElement).naturalWidth;
         const originalHeight = (obj.getElement() as HTMLImageElement).naturalHeight;
-
+    
         const isCropped = 
             obj.cropX !== 0 || 
             obj.cropY !== 0 || 
-            obj.width !== originalWidth || 
+            obj.width !== originalWidth ||
             obj.height !== originalHeight;
     
-        if (isCropped) {
+        if (isCropped && (!this.lastAppliedCropParams || !this.compareCropParams(obj))) {
             this.lastAppliedCropParams = {
                 cropX: obj.cropX,
                 cropY: obj.cropY,
                 width: obj.width,
                 height: obj.height,
             };
-        }
+        }        
     
         return isCropped;
     }
 
-    objectStatus(): objectElementStatus {        
-        return {
-            hasClipping: this.activeElementIsCropped(),
-        }
-    }
 
     apply(): void {
         const cropControlBox = this.cropHelpers[1];
         const obj = this.activeObject as Rect;
         if (!obj) return;
-
         const cropParams = {
             cropX: (cropControlBox.left - obj.left) / obj.scaleX,
             cropY: (cropControlBox.top - obj.top) / obj.scaleY,
@@ -246,7 +248,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             accept: this.apply.bind(this),
             cancel: this.cancel.bind(this),
             clear: this.clear.bind(this),
-            objectStatus: this.objectStatus.bind(this),
         }
     
         if (this.activeElementIsCropped()) {
