@@ -41,4 +41,5 @@ export const activeObjectStatus = (actions: ExecutableActionsList) => {
 };
 
 
-export type ActiveObjectAPI = ReturnType<typeof activeObject> | ReturnType<typeof activeObjectStatus>;
+export type ActiveObjectAPI = ReturnType<typeof activeObject>;
+export type ActiveObjectStatusAPI = ReturnType<typeof activeObjectStatus>;
