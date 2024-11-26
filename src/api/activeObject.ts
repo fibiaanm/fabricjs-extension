@@ -1,5 +1,5 @@
 // import { PropertiesObjects } from "../actions/interfaces/ExecutableActions.ts";
-import {ExecutableActionsList} from "../actions/list.ts";
+import {ExecutableActionsList, PropertiesObjectsList} from "../actions/list.ts";
 import {contextualProps} from "./main.ts";
 
 export const activeObject = (actions: ExecutableActionsList) => {
@@ -32,10 +32,10 @@ export const activeObject = (actions: ExecutableActionsList) => {
     }
 }
 
-export const activeObjectStatus = (actions: ExecutableActionsList) => {
+export const activeObjectStatus = (actions: PropertiesObjectsList) => {
     return {
         hasCropping: () => {
-            return actions.cropActiveElement?.activeElementIsCropped?.()
+            return actions.cropActiveElement?.activeElementIsCropped?.() ?? false;
         }
     }
 };

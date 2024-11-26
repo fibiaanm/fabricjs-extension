@@ -39,6 +39,10 @@ export interface ExecutableActions {
     activeElementIsCropped?: () => boolean;
 }
 
+export interface PropertiesObjects {
+    activeElementIsCropped?: () => boolean;
+}
+
 export interface ExecutableActionBuilder {
     build(...args: unknown[]): ExecutableActions;
     requiresActions?: boolean;

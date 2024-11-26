@@ -17,7 +17,7 @@ import {PanToCenter, PanToCenterConfig} from "./Canvas/PanToCenter.ts";
 import {ChangeZoomRatio, ChangeZoomRatioConfig} from "./ContextualActions/ChangeZoomRatio.ts";
 import {BringFrontActiveElement, BringFrontActiveElementConfig} from "./BringFrontActiveElement.ts";
 import {PushBackActiveElement, PushBackActiveElementConfig} from "./pushBackActiveElement.ts";
-import {ExecutableActionBuilder, ExecutableActions} from "./interfaces/ExecutableActions.ts";
+import {ExecutableActionBuilder, ExecutableActions, PropertiesObjects} from "./interfaces/ExecutableActions.ts";
 import {DropImagesOnCanvas, DropImagesOnCanvasConfig} from "./DropImagesOnCanvas.ts";
 import {ZoomWithPinch} from "./MobileSupport/ZoomWithPinch.ts";
 import {ContextMenuHandler} from "./ContextMenuHandler.ts";
@@ -66,6 +66,10 @@ export type ActionsListBuilder = {
 export type ActionsAvailable = keyof typeof actionsList | '*';
 export type ExecutableActionsList = {
     [key in ActionsAvailable]?: ExecutableActions
+}
+
+export type PropertiesObjectsList = {
+    [key in ActionsAvailable]?: PropertiesObjects
 }
 
 export enum extensionCustomWindowEvents {
