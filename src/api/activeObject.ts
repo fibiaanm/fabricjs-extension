@@ -26,7 +26,7 @@ export const activeObject = (actions: ExecutableActionsList) => {
             actions.copyActiveElement?.execute();
         },
         paste: () => {
-            actions.pasteAnyElement?.execute?.();
+            actions.pasteAnyElement?.execute();
         },
     }
 }
