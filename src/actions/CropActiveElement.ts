@@ -221,7 +221,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     start(ev: KeyboardEvent): void {
-        this.objectStatus();
+        this.activeElementIsCropped();
 
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
