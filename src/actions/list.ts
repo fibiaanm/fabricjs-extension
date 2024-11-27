@@ -76,6 +76,7 @@ export enum extensionCustomWindowEvents {
     imageDropped = 'imageDropped',
     deleteActiveElement = 'deleteActiveElement',
     cropCanceled = 'cropCanceled',
+    cropAplicated = 'cropAplicated',
 }
 
 export type ActionsToInstallConfig = {

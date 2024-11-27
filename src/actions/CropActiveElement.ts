@@ -162,6 +162,9 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         if (this.dialog) {
             this.dialog.close();
         }
+
+        const cropAplicatedEvent = new CustomEvent(extensionCustomWindowEvents.cropAplicated);
+        window.dispatchEvent(cropAplicatedEvent);
     
         this.activeObject = undefined;
         this.dialog = undefined;
