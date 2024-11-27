@@ -199,7 +199,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             obj.setCoords();
         }
 
-        this.removeHelpers();
+        this.removeHelpers();        
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
@@ -219,6 +219,9 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         }
 
         this.removeHelpers();
+        const cropResetEvent = new CustomEvent(extensionCustomWindowEvents.cropReset);
+        window.dispatchEvent(cropResetEvent);
+        
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
@@ -229,7 +232,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         if (ev.key === 'x' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey) {
             this.execute();
         }
-        if (ev.key === 'c' ) {
+        if (ev.key === 'r' && !ev.ctrlKey && !ev.shiftKey && !ev.altKey ) {
             this.clear();
         }
         if (ev.key === 'Escape') {
