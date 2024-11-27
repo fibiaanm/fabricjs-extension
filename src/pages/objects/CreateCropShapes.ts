@@ -2,6 +2,7 @@ import {FabricImage, FabricObject, Group, Rect} from "fabric";
 import config from "../../config/config.ts";
 import {CropBoxConfig} from "../../config/objects.ts";
 import Size from "../../primitives/Size.ts";
+import { CropActiveElement } from "../../actions/CropActiveElement.ts";
 
 type TCreateCropBox = {
     outerRect: FabricObject,
@@ -13,6 +14,7 @@ export class CreateCropShapes {
 
     constructor(
         private activeObject: FabricImage,
+        private cropActiveElement: CropActiveElement
     ) {
     }
 
@@ -62,7 +64,7 @@ export class CreateCropShapes {
             obj.height * obj.scaleY
         );
 
-        if (obj.hasCrop()) {
+        if (this.cropActiveElement.activeElementIsCropped()) {
             const cropX = obj.cropX || 0;
             const cropY = obj.cropY || 0;
 
