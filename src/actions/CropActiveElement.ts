@@ -292,7 +292,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             duration: 100,
             canvas: this.canvas,
             onComplete: () => {
-                const createCropShapes = new CreateCropShapes(obj);
+                const createCropShapes = new CreateCropShapes(obj, this.activeElementIsCropped());
                 const { cutOutGroup, innerRect, outerRect } = createCropShapes.createCropBox();
         
                 const controller = createCropShapes.createControllerBox({

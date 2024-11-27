@@ -13,6 +13,7 @@ export class CreateCropShapes {
 
     constructor(
         private activeObject: FabricImage,
+        private hasCrop: boolean
     ) {
     }
 
@@ -62,7 +63,7 @@ export class CreateCropShapes {
             obj.height * obj.scaleY
         );
 
-        if (obj.hasCrop()) {
+        if (this.hasCrop) {
             const cropX = obj.cropX || 0;
             const cropY = obj.cropY || 0;
 
