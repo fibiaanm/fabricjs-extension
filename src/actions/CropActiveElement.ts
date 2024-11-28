@@ -29,6 +29,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private originalAngle: number | undefined;
     private lastAppliedCropParams: CropParams | undefined;
     private isCropMode: boolean = false;
+    private clearCrop: boolean = false;
 
     private config: CropActiveElementConfig = {}
     public contextual: ContextualProperties[] = [{
@@ -212,6 +213,9 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     cancel(): void {
+        if (this.clearCrop) {
+            return;
+        }
         this.resetCanvasSelection();
         const obj = this.activeObject as FabricImage;
         if (obj && this.originalAngle !== undefined) {
@@ -247,6 +251,8 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     clear(): void {
+        this.clearCrop = true;
+        this.isCropMode = false;
         const obj = this.activeObject as FabricImage;
         if (obj && this.originalAngle !== undefined) {
             animationRotateToAngle({
@@ -255,7 +261,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
                 duration: 100,
                 canvas: this.canvas,
             })
-            this.canvas.setActiveObject(obj);
             obj.setCoords();
         }
 
@@ -286,6 +291,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     execute() {
+        this.clearCrop = false;
         const activeElement = this.canvas.getActiveObject();
         if (!activeElement) return;
 
