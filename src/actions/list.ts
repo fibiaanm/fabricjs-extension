@@ -78,6 +78,7 @@ export enum extensionCustomWindowEvents {
     cropCanceled = 'cropCanceled',
     cropAplicated = 'cropAplicated',
     cropReset = 'cropReset',
+    cancelModeCrop = 'cancelModeCrop',
 }
 
 export type ActionsToInstallConfig = {
