@@ -28,7 +28,8 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     private dialog: DialogWithButtonActions | undefined;
     private originalAngle: number | undefined;
     private lastAppliedCropParams: CropParams | undefined;
-    
+    private isCropMode: boolean = false;
+
     private config: CropActiveElementConfig = {}
     public contextual: ContextualProperties[] = [{
         name: 'Crop',
@@ -77,6 +78,36 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         canvas.on('selection:updated', (opt) => {
             if (!(opt.deselected[0] == this.cropHelpers[1])) return;
         });
+        canvas.on('before:selection:cleared', (opt: any) => {
+            if (this.isCropMode) {
+                opt.preventDefault()
+            }
+        });
+        canvas.on('mouse:move', (opt) => {
+            if (this.isCropMode) {
+                if (opt.target && !this.cropHelpers.includes(opt.target)) {
+                    canvas.setCursor('not-allowed');
+                } else {
+                    canvas.setCursor('default');
+                }
+            }
+        });
+        canvas.on('mouse:out', () => {
+            if (!this.isCropMode) {
+                canvas.setCursor('default');
+            }
+        });
+        canvas.on('object:added', (opt: any) => {
+            if (this.isCropMode) {
+                const isCropHelperObject = this.cropHelpers.includes(opt.target);
+                if (!isCropHelperObject) {
+                    this.cancel();
+                    const cancelModeCropEvent = new CustomEvent(extensionCustomWindowEvents.cancelModeCrop);
+                    window.dispatchEvent(cancelModeCropEvent);
+                }
+            }
+        });
+
         this.listener = this.start.bind(this);
         window.addEventListener('keydown', this.listener);
     }
@@ -99,27 +130,35 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         );
     }
 
-    activeElementIsCropped(): boolean {        
+    private resetCanvasSelection(): void {
+        this.isCropMode = false;
+        this.canvas.selection = true;
+        this.canvas.getObjects().forEach(obj => {
+            obj.selectable = true;
+        });
+    }
+
+    activeElementIsCropped(): boolean {
         const obj = this.canvas.getActiveObject() as FabricImage;
         if (!obj) return false;
-    
-        const hasCropProperties = 
-            typeof obj.cropX === 'number' && 
-            typeof obj.cropY === 'number' && 
-            typeof obj.width === 'number' && 
+
+        const hasCropProperties =
+            typeof obj.cropX === 'number' &&
+            typeof obj.cropY === 'number' &&
+            typeof obj.width === 'number' &&
             typeof obj.height === 'number';
-    
+
         if (!hasCropProperties) return false;
-    
+
         const originalWidth = (obj.getElement() as HTMLImageElement).naturalWidth;
         const originalHeight = (obj.getElement() as HTMLImageElement).naturalHeight;
-    
-        const isCropped = 
-            obj.cropX !== 0 || 
-            obj.cropY !== 0 || 
+
+        const isCropped =
+            obj.cropX !== 0 ||
+            obj.cropY !== 0 ||
             obj.width !== originalWidth ||
             obj.height !== originalHeight;
-    
+
         if (isCropped && (!this.lastAppliedCropParams || !this.compareCropParams(obj))) {
             this.lastAppliedCropParams = {
                 cropX: obj.cropX,
@@ -127,8 +166,8 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
                 width: obj.width,
                 height: obj.height,
             };
-        }        
-    
+        }
+
         return isCropped;
     }
 
@@ -145,7 +184,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             left: cropControlBox.left,
             top: cropControlBox.top,
         }
-        
+
         this.lastAppliedCropParams = { ...cropParams };
         obj.set({ ...cropParams });
         animationRotateToAngle({
@@ -158,6 +197,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.canvas.setActiveObject(obj);
         lockingObjectActions(obj, false);
         this.removeHelpers();
+        this.resetCanvasSelection();
 
         if (this.dialog) {
             this.dialog.close();
@@ -165,13 +205,14 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
 
         const cropAplicatedEvent = new CustomEvent(extensionCustomWindowEvents.cropAplicated);
         window.dispatchEvent(cropAplicatedEvent);
-    
+
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
     }
 
-    cancel(): void {            
+    cancel(): void {
+        this.resetCanvasSelection();
         const obj = this.activeObject as FabricImage;
         if (obj && this.originalAngle !== undefined) {
             animationRotateToAngle({
@@ -199,7 +240,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             obj.setCoords();
         }
 
-        this.removeHelpers();        
+        this.removeHelpers();
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
@@ -219,9 +260,10 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         }
 
         this.removeHelpers();
+        this.resetCanvasSelection();
         const cropResetEvent = new CustomEvent(extensionCustomWindowEvents.cropReset);
         window.dispatchEvent(cropResetEvent);
-        
+
         this.activeObject = undefined;
         this.dialog = undefined;
         this.originalAngle = undefined;
@@ -244,8 +286,16 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
     }
 
     execute() {
-        const activeElement = this.canvas.getActiveObject();   
+        const activeElement = this.canvas.getActiveObject();
         if (!activeElement) return;
+
+        this.canvas.selection = false;
+        this.canvas.getObjects().forEach(obj => {
+            if (obj !== activeElement) {
+                obj.selectable = false;
+            }
+        });
+
         this.activeObject = activeElement;
         if (typeof (activeElement as any).cropX !== 'number') return
 
@@ -255,7 +305,7 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             cancel: this.cancel.bind(this),
             clear: this.clear.bind(this),
         }
-    
+
         if (this.activeElementIsCropped()) {
             const obj = activeElement as FabricImage;
             this.lastAppliedCropParams = {
@@ -267,7 +317,6 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         }
 
         this.setupCrop().then();
-
         if (this.config?.open) {
             this.config.open(coords, actionCallbacks);
             return;
@@ -285,13 +334,13 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
         this.dialog = dialog;
     }
 
-    async setupCrop() {        
-        const obj = this.activeObject as FabricImage; 
+    async setupCrop() {
+        const obj = this.activeObject as FabricImage;
 
         lockingObjectActions(obj, true);
-        
+
         this.originalAngle = obj.angle;
-        
+
         animationRotateToAngle({
             activeObject: obj,
             targetAngle: 0,
@@ -300,23 +349,24 @@ export class CropActiveElement implements UserDependentActions, ExecutableAction
             onComplete: () => {
                 const createCropShapes = new CreateCropShapes(obj, this.activeElementIsCropped());
                 const { cutOutGroup, innerRect, outerRect } = createCropShapes.createCropBox();
-        
+
                 const controller = createCropShapes.createControllerBox({
                     cutOutGroup,
                     innerRect,
                     outerRect,
                 });
-        
+
                 this.canvas.add(cutOutGroup);
                 this.canvas.add(controller);
                 controller.controls.mtr.visible = false;
                 this.canvas.setActiveObject(controller);
-        
+
                 this.cropHelpers.push(cutOutGroup);
                 this.cropHelpers.push(controller);
+                this.isCropMode = true;
             },
         });
-        
+
         obj.setCoords();
     }
 }
